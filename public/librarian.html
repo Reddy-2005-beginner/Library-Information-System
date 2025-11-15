@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Library - Librarian Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --warning: #fca311;
+            --danger: #e63946;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body { 
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%); 
+            padding: 20px; 
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .stat-box i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .box { 
+            background: white; 
+            padding: 25px; 
+            margin-bottom: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h2, h3 { 
+            color: var(--secondary); 
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h2 i, h3 i {
+            margin-right: 10px;
+        }
+        
+        button { 
+            padding: 12px 20px; 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        button.success { background: var(--success); }
+        button.warning { background: var(--warning); }
+        button.danger { background: var(--danger); }
+        button.info { background: #6c757d; }
+        
+        input, select { 
+            padding: 12px; 
+            width: 100%; 
+            margin: 8px 0; 
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        table { 
+            border-collapse: collapse; 
+            width: 100%; 
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        th, td { 
+            border: 1px solid #e0e0e0; 
+            padding: 12px 15px; 
+            text-align: left;
+        }
+        
+        th { 
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white; 
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: #e9ecef;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .action-buttons button {
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            margin: 2px;
+        }
+        
+        .status-issued { color: var(--warning); font-weight: bold; }
+        .status-returned { color: var(--success); font-weight: bold; }
+        .status-available { color: var(--success); font-weight: bold; }
+        .status-not-available { color: var(--danger); font-weight: bold; }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            background: #f8f9fa;
+            border: none;
+            flex: 1;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .alert {
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6c757d;
+        }
+        
+        .close:hover {
+            color: var(--danger);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-user-tie"></i> Librarian Dashboard</h1>
+            <p>Manage books, students, and book transactions</p>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-container" id="statsContainer">
+            <div class="stat-box">
+                <i class="fas fa-book" style="color: var(--primary);"></i>
+                <div class="stat-number" id="totalBooks">0</div>
+                <div>Total Books</div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-users" style="color: var(--success);"></i>
+                <div class="stat-number" id="totalStudents">0</div>
+                <div>Total Students</div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-hand-holding" style="color: var(--warning);"></i>
+                <div class="stat-number" id="issuedBooks">0</div>
+                <div>Issued Books</div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                <div class="stat-number" id="availableBooks">0</div>
+                <div>Available Books</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('books')"><i class="fas fa-book"></i> Books Management</button>
+            <button class="tab" onclick="showTab('students')"><i class="fas fa-users"></i> Students Management</button>
+            <button class="tab" onclick="showTab('transactions')"><i class="fas fa-exchange-alt"></i> Book Transactions</button>
+            <button class="tab" onclick="showTab('issues')"><i class="fas fa-list"></i> All Issues</button>
+        </div>
+
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
+        <!-- Books Management Tab -->
+        <div id="books" class="tab-content active">
+            <!-- Add Book -->
+            <div class="box">
+                <h3><i class="fas fa-plus-circle"></i> Add New Book</h3>
+                <div class="form-group">
+                    <input id="title" placeholder="Book Title" required>
+                    <input id="author" placeholder="Author" required>
+                    <input id="isbn" placeholder="ISBN" required>
+                    <input id="copies" type="number" placeholder="No. of Copies" min="1" required>
+                </div>
+                <button onclick="addBook()"><i class="fas fa-save"></i> Add Book</button>
+            </div>
+
+            <!-- Books List with Actions -->
+            <div class="box">
+                <h3><i class="fas fa-list"></i> All Books</h3>
+                <button onclick="loadBooks()"><i class="fas fa-sync-alt"></i> Refresh Books</button>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>ISBN</th>
+                            <th>Copies</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="booksTableBody">
+                        <!-- Books will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Students Management Tab -->
+        <div id="students" class="tab-content">
+            <!-- Add Student -->
+            <div class="box">
+                <h3><i class="fas fa-user-plus"></i> Add New Student</h3>
+                <div class="form-group">
+                    <input id="sname" placeholder="Student Name" required>
+                    <input id="sroll" placeholder="Roll Number" required>
+                    <input id="semail" placeholder="Email (Optional)" type="email">
+                    <input id="sphone" placeholder="Phone (Optional)">
+                </div>
+                <button onclick="addStudent()"><i class="fas fa-save"></i> Add Student</button>
+            </div>
+
+            <!-- Students List with Actions -->
+            <div class="box">
+                <h3><i class="fas fa-users"></i> All Students</h3>
+                <button onclick="loadStudents()"><i class="fas fa-sync-alt"></i> Refresh Students</button>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Roll Number</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsTableBody">
+                        <!-- Students will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Transactions Tab -->
+        <div id="transactions" class="tab-content">
+            <!-- Issue Book -->
+            <div class="box">
+                <h3><i class="fas fa-hand-holding"></i> Issue Book</h3>
+                <div class="form-group">
+                    <input id="issueBookId" placeholder="Book ID" type="number" required>
+                    <input id="issueStudentId" placeholder="Student ID" type="number" required>
+                    <input id="issueDate" type="date" required>
+                </div>
+                <button class="success" onclick="issueBook()"><i class="fas fa-paper-plane"></i> Issue Book</button>
+            </div>
+
+            <!-- Return Book -->
+            <div class="box">
+                <h3><i class="fas fa-undo"></i> Return Book</h3>
+                <div class="form-group">
+                    <input id="returnId" placeholder="Issue ID" type="number" required>
+                    <input id="returnDate" type="date" required>
+                </div>
+                <button class="warning" onclick="returnBook()"><i class="fas fa-undo"></i> Return Book</button>
+            </div>
+        </div>
+
+        <!-- All Issues Tab -->
+        <div id="issues" class="tab-content">
+            <div class="box">
+                <h3><i class="fas fa-list-alt"></i> All Book Issues</h3>
+                <button onclick="loadIssues()"><i class="fas fa-sync-alt"></i> Refresh Issues</button>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Issue ID</th>
+                            <th>Book Title</th>
+                            <th>Student Name</th>
+                            <th>Roll No</th>
+                            <th>Issue Date</th>
+                            <th>Return Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="issuesTableBody">
+                        <!-- Issues will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Book Modal -->
+    <div id="editBookModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Edit Book</h3>
+                <span class="close" onclick="closeModal('editBookModal')">&times;</span>
+            </div>
+            <input type="hidden" id="editBookId">
+            <div class="form-group">
+                <input id="editTitle" placeholder="Book Title" required>
+                <input id="editAuthor" placeholder="Author" required>
+                <input id="editIsbn" placeholder="ISBN" required>
+                <input id="editCopies" type="number" placeholder="No. of Copies" min="0" required>
+            </div>
+            <button class="success" onclick="updateBook()"><i class="fas fa-save"></i> Update Book</button>
+            <button class="danger" onclick="closeModal('editBookModal')"><i class="fas fa-times"></i> Cancel</button>
+        </div>
+    </div>
+
+    <!-- Edit Student Modal -->
+    <div id="editStudentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Edit Student</h3>
+                <span class="close" onclick="closeModal('editStudentModal')">&times;</span>
+            </div>
+            <input type="hidden" id="editStudentId">
+            <div class="form-group">
+                <input id="editName" placeholder="Student Name" required>
+                <input id="editRoll" placeholder="Roll Number" required>
+                <input id="editEmail" placeholder="Email" type="email">
+                <input id="editPhone" placeholder="Phone">
+            </div>
+            <button class="success" onclick="updateStudent()"><i class="fas fa-save"></i> Update Student</button>
+            <button class="danger" onclick="closeModal('editStudentModal')"><i class="fas fa-times"></i> Cancel</button>
+        </div>
+    </div>
+
+    <script>
+    const BASE_URL = 'http://localhost:5000/api/librarian';
+
+    // Utility Functions
+    function showAlert(message, type = 'success') {
+        const alertContainer = document.getElementById('alertContainer');
+        const alert = document.createElement('div');
+        alert.className = `alert ${type}`;
+        alert.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check' : 'exclamation-triangle'}"></i>
+            ${message}
+        `;
+        alertContainer.appendChild(alert);
+        alert.style.display = 'block';
+        
+        setTimeout(() => {
+            alert.remove();
+        }, 5000);
+    }
+
+    function showTab(tabName) {
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        document.getElementById(tabName).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    // Enhanced fetch function with better error handling
+    async function apiCall(url, options = {}) {
+        try {
+            console.log(`Making API call to: ${url}`);
+            const response = await fetch(url, {
+                ...options,
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log(`API response from ${url}:`, data);
+            return data;
+        } catch (error) {
+            console.error(`API call failed for ${url}:`, error);
+            throw error;
+        }
+    }
+
+    // Test connection on page load
+    async function testConnection() {
+        try {
+            console.log('Testing connection to server...');
+            const result = await apiCall(`${BASE_URL}/test`);
+            if (result.success) {
+                console.log('✅ Server connection successful');
+            }
+        } catch (error) {
+            console.error('❌ Server connection failed:', error);
+            showAlert('Cannot connect to server. Please make sure the backend is running on port 5000.', 'error');
+        }
+    }
+
+    // Load dashboard statistics
+    async function loadStats() {
+        try {
+            console.log('Loading statistics...');
+            const result = await apiCall(`${BASE_URL}/stats`);
+            
+            if (result.success) {
+                const stats = result.data;
+                document.getElementById('totalBooks').textContent = stats.totalBooks;
+                document.getElementById('totalStudents').textContent = stats.totalStudents;
+                document.getElementById('issuedBooks').textContent = stats.issuedBooks;
+                document.getElementById('availableBooks').textContent = stats.availableBooks;
+                console.log('✅ Statistics loaded successfully');
+            }
+        } catch (error) {
+            console.error('Error loading stats:', error);
+            showAlert('Error loading statistics', 'error');
+        }
+    }
+
+    // BOOK FUNCTIONS
+    async function addBook() {
+        const title = document.getElementById('title').value;
+        const author = document.getElementById('author').value;
+        const isbn = document.getElementById('isbn').value;
+        const copies = document.getElementById('copies').value;
+
+        if (!title || !author || !isbn || !copies) {
+            showAlert('Please fill all fields', 'error');
+            return;
+        }
+
+        try {
+            console.log('Adding book:', { title, author, isbn, copies });
+            const data = await apiCall(`${BASE_URL}/addBook`, {
+                method: "POST",
+                body: JSON.stringify({ title, author, isbn, copies })
+            });
+            
+            if (data.success) {
+                showAlert(data.message);
+                // Clear form
+                document.getElementById('title').value = '';
+                document.getElementById('author').value = '';
+                document.getElementById('isbn').value = '';
+                document.getElementById('copies').value = '';
+                loadBooks();
+                loadStats();
+            } else {
+                showAlert(data.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error adding book:', error);
+            showAlert('Error adding book. Please check console for details.', 'error');
+        }
+    }
+
+    async function loadBooks() {
+        try {
+            console.log('Loading books...');
+            const result = await apiCall(`${BASE_URL}/books`);
+            
+            if (result.success) {
+                const books = result.data;
+                let tableBody = '';
+                
+                if (books.length === 0) {
+                    tableBody = `<tr><td colspan="7" style="text-align: center;">No books found</td></tr>`;
+                } else {
+                    books.forEach(book => {
+                        // Escape special characters to prevent XSS and syntax errors
+                        const safeTitle = book.book_title.replace(/'/g, "\\'");
+                        const safeAuthor = book.author.replace(/'/g, "\\'");
+                        const safeIsbn = book.isbn_number.replace(/'/g, "\\'");
+                        
+                        tableBody += `<tr>
+                            <td>${book.serial_number}</td>
+                            <td>${book.book_title}</td>
+                            <td>${book.author}</td>
+                            <td>${book.isbn_number}</td>
+                            <td>${book.copies}</td>
+                            <td class="status-${book.status ? book.status.toLowerCase().replace(' ', '-') : 'unknown'}">${book.status || 'Unknown'}</td>
+                            <td class="action-buttons">
+                                <button class="info" onclick="openEditBookModal(${book.serial_number}, '${safeTitle}', '${safeAuthor}', '${safeIsbn}', ${book.copies})">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="danger" onclick="deleteBook(${book.serial_number})">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>`;
+                    });
+                }
+                document.getElementById('booksTableBody').innerHTML = tableBody;
+                console.log(`✅ Loaded ${books.length} books`);
+            }
+        } catch (error) {
+            console.error('Error loading books:', error);
+            showAlert('Error loading books', 'error');
+        }
+    }
+
+    function openEditBookModal(serial_number, title, author, isbn, copies) {
+        document.getElementById('editBookId').value = serial_number;
+        document.getElementById('editTitle').value = title;
+        document.getElementById('editAuthor').value = author;
+        document.getElementById('editIsbn').value = isbn;
+        document.getElementById('editCopies').value = copies;
+        openModal('editBookModal');
+    }
+
+    async function updateBook() {
+        const id = document.getElementById('editBookId').value;
+        const title = document.getElementById('editTitle').value;
+        const author = document.getElementById('editAuthor').value;
+        const isbn = document.getElementById('editIsbn').value;
+        const copies = document.getElementById('editCopies').value;
+
+        if (!title || !author || !isbn || !copies) {
+            showAlert('Please fill all fields', 'error');
+            return;
+        }
+
+        try {
+            console.log('Updating book:', { id, title, author, isbn, copies });
+            const data = await apiCall(`${BASE_URL}/updateBook/${id}`, {
+                method: "PUT",
+                body: JSON.stringify({ title, author, isbn, copies })
+            });
+            
+            if (data.success) {
+                showAlert(data.message);
+                closeModal('editBookModal');
+                loadBooks();
+                loadStats();
+            } else {
+                showAlert(data.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error updating book:', error);
+            showAlert('Error updating book', 'error');
+        }
+    }
+
+    async function deleteBook(id) {
+        if (!confirm('Are you sure you want to delete this book?')) {
+            return;
+        }
+
+        try {
+            console.log('Deleting book:', id);
+            const data = await apiCall(`${BASE_URL}/deleteBook/${id}`, {
+                method: "DELETE"
+            });
+            
+            if (data.success) {
+                showAlert(data.message);
+                loadBooks();
+                loadStats();
+            } else {
+                showAlert(data.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error deleting book:', error);
+            showAlert('Error deleting book', 'error');
+        }
+    }
+
+    // STUDENT FUNCTIONS
+    async function addStudent() {
+        const name = document.getElementById('sname').value;
+        const roll = document.getElementById('sroll').value;
+        const email = document.getElementById('semail').value;
+        const phone = document.getElementById('sphone').value;
+
+        if (!name || !roll) {
+            showAlert('Please fill name and roll number', 'error');
+            return;
+        }
+
+        try {
+            console.log('Adding student:', { name, roll, email, phone });
+            const data = await apiCall(`${BASE_URL}/addStudent`, {
+                method: "POST",
+                body: JSON.stringify({ name, roll, email, phone })
+            });
+            
+            if (data.success) {
+                showAlert(data.message);
+                // Clear form
+                document.getElementById('sname').value = '';
+                document.getElementById('sroll').value = '';
+                document.getElementById('semail').value = '';
+                document.getElementById('sphone').value = '';
+                loadStudents();
+                loadStats();
+            } else {
+                showAlert(data.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error adding student:', error);
+            showAlert('Error adding student', 'error');
+        }
+    }
+
+    async function loadStudents() {
+        try {
+            console.log('Loading students...');
+            const result = await apiCall(`${BASE_URL}/students`);
+            
+            if (result.success) {
+                const students = result.data;
+                let tableBody = '';
+                
+                if (students.length === 0) {
+                    tableBody = `<tr><td colspan="6" style="text-align: center;">No students found</td></tr>`;
+                } else {
+                    students.forEach(student => {
+                        // Escape special characters
+                        const safeName = student.name.replace(/'/g, "\\'");
+                        const safeRoll = student.roll_number.replace(/'/g, "\\'");
+                        const safeEmail = (student.email || '').replace(/'/g, "\\'");
+                        const safePhone = (student.phone || '').replace(/'/g, "\\'");
+                        
+                        tableBody += `<tr>
+                            <td>${student.id}</td>
+                            <td>${student.name}</td>
+                            <td>${student.roll_number}</td>
+                            <td>${student.email || 'N/A'}</td>
+                            <td>${student.phone || 'N/A'}</td>
+                            <td class="action-buttons">
+                                <button class="info" onclick="openEditStudentModal(${student.id}, '${safeName}', '${safeRoll}', '${safeEmail}', '${safePhone}')">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="danger" onclick="deleteStudent(${student.id})">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>`;
+                    });
+                }
+                document.getElementById('studentsTableBody').innerHTML = tableBody;
+                console.log(`✅ Loaded ${students.length} students`);
+            }
+        } catch (error) {
+            console.error('Error loading students:', error);
+            showAlert('Error loading students', 'error');
+        }
+    }
+
+    function openEditStudentModal(id, name, roll, email, phone) {
+        document.getElementById('editStudentId').value = id;
+        document.getElementById('editName').value = name;
+        document.getElementById('editRoll').value = roll;
+        document.getElementById('editEmail').value = email;
+        document.getElementById('editPhone').value = phone;
+        openModal('editStudentModal');
+    }
+
+    async function updateStudent() {
+        const id = document.getElementById('editStudentId').value;
+        const name = document.getElementById('editName').value;
+        const roll = document.getElementById('editRoll').value;
+        const email = document.getElementById('editEmail').value;
+        const phone = document.getElementById('editPhone').value;
+
+        if (!name || !roll) {
+            showAlert('Please fill name and roll number', 'error');
+            return;
+        }
+
+        try {
+            console.log('Updating student:', { id, name, roll, email, phone });
+            const data = await apiCall(`${BASE_URL}/updateStudent/${id}`, {
+                method: "PUT",
+                body: JSON.stringify({ name, roll, email, phone })
+            });
+            
+            if (data.success) {
+                showAlert(data.message);
+                closeModal('editStudentModal');
+                loadStudents();
+            } else {
+                showAlert(data.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error updating student:', error);
+            showAlert('Error updating student', 'error');
+        }
+    }
+
+    async function deleteStudent(id) {
+        if (!confirm('Are you sure you want to delete this student?')) {
+            return;
+        }
+
+        try {
+            console.log('Deleting student:', id);
+            const data = await apiCall(`${BASE_URL}/deleteStudent/${id}`, {
+                method: "DELETE"
+            });
+            
+            if (data.success) {
+                showAlert(data.message);
+                loadStudents();
+                loadStats();
+            } else {
+                showAlert(data.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error deleting student:', error);
+            showAlert('Error deleting student', 'error');
+        }
+    }
+
+    // TRANSACTION FUNCTIONS
+    async function issueBook() {
+        const book_id = document.getElementById('issueBookId').value;
+        const student_id = document.getElementById('issueStudentId').value;
+        const issue_date = document.getElementById('issueDate').value;
+
+        if (!book_id || !student_id || !issue_date) {
+            showAlert('Please fill all fields', 'error');
+            return;
+        }
+
+        try {
+            console.log('Issuing book:', { book_id, student_id, issue_date });
+            const data = await apiCall(`${BASE_URL}/issueBook`, {
+                method: "POST",
+                body: JSON.stringify({ book_id, student_id, issue_date })
+            });
+            
+            if (data.success) {
+                showAlert(data.message);
+                document.getElementById('issueBookId').value = '';
+                document.getElementById('issueStudentId').value = '';
+                loadStats();
+                loadIssues();
+            } else {
+                showAlert(data.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error issuing book:', error);
+            showAlert('Error issuing book', 'error');
+        }
+    }
+
+    async function returnBook() {
+        const issueId = document.getElementById('returnId').value;
+        const return_date = document.getElementById('returnDate').value;
+
+        if (!issueId || !return_date) {
+            showAlert('Please fill all fields', 'error');
+            return;
+        }
+
+        try {
+            console.log('Returning book:', { issueId, return_date });
+            const data = await apiCall(`${BASE_URL}/returnBook/${issueId}`, {
+                method: "PUT",
+                body: JSON.stringify({ return_date })
+            });
+            
+            if (data.success) {
+                showAlert(data.message);
+                document.getElementById('returnId').value = '';
+                loadStats();
+                loadIssues();
+            } else {
+                showAlert(data.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error returning book:', error);
+            showAlert('Error returning book', 'error');
+        }
+    }
+
+    // LOAD ISSUES
+    async function loadIssues() {
+        try {
+            console.log('Loading issues...');
+            const result = await apiCall(`${BASE_URL}/issues`);
+            
+            if (result.success) {
+                const issues = result.data;
+                let tableBody = '';
+                
+                if (issues.length === 0) {
+                    tableBody = `<tr><td colspan="7" style="text-align: center;">No issues found</td></tr>`;
+                } else {
+                    issues.forEach(issue => {
+                        tableBody += `<tr>
+                            <td>${issue.id}</td>
+                            <td>${issue.book_title} (ISBN: ${issue.isbn_number})</td>
+                            <td>${issue.student_name}</td>
+                            <td>${issue.roll_number}</td>
+                            <td>${new Date(issue.issue_date).toLocaleDateString()}</td>
+                            <td>${issue.return_date ? new Date(issue.return_date).toLocaleDateString() : 'Not Returned'}</td>
+                            <td class="status-${issue.status ? issue.status.toLowerCase() : 'unknown'}">${issue.status || 'Unknown'}</td>
+                        </tr>`;
+                    });
+                }
+                document.getElementById('issuesTableBody').innerHTML = tableBody;
+                console.log(`✅ Loaded ${issues.length} issues`);
+            }
+        } catch (error) {
+            console.error('Error loading issues:', error);
+            showAlert('Error loading issues', 'error');
+        }
+    }
+
+    // Initialize dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 Initializing Librarian Dashboard...');
+        
+        // Test connection first
+        testConnection().then(() => {
+            // Then load all data
+            loadStats();
+            loadBooks();
+            loadStudents();
+            loadIssues();
+            
+            // Set today's date as default for issue and return dates
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('issueDate').value = today;
+            document.getElementById('returnDate').value = today;
+            
+            console.log('✅ Dashboard initialization complete');
+        });
+    });
+</script>
+</body>
+</html>

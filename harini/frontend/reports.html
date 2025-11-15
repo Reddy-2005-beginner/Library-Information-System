@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Clerk - Reports</title>
+  <link rel="stylesheet" href="clerk.css">
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar will be injected by clerk-menu.js -->
+    <link rel="stylesheet" href="clerk-menu.css">
+    <script src="clerk-menu.js" defer></script>
+    <main class="main container">
+      <h1>Reports & Analytics</h1>
+
+      <section>
+        <h3>Daily Issue/Return Report</h3>
+        <div class="form-row">
+          <input id="rdate" type="date">
+          <button class="btn" id="rbtn">Get</button>
+        </div>
+        <div id="dailyCards" class="cards-row"></div>
+      </section>
+
+      <section>
+        <h3>Fine Collection Report</h3>
+        <div class="form-row">
+          <input id="from" type="date">
+          <input id="to" type="date">
+          <button class="btn" id="fbtn">Get</button>
+        </div>
+        <div id="fresults">
+          <div class="cards-row">
+            <div class="card" id="fCard">
+              <div class="card-header">Total collected</div>
+              <div class="card-body"><span id="fTotal">-</span></div>
+            </div>
+            <div class="card" style="flex:1">
+              <div class="card-header">Fines (count)</div>
+              <div class="card-body" id="fCount">-</div>
+            </div>
+          </div>
+          <h4>Fines (records)</h4>
+          <div class="table-responsive"><table class="table" id="finesTable"><thead><tr><th>ID</th><th>Book</th><th>Amount</th><th>Paid At</th></tr></thead><tbody></tbody></table></div>
+
+          <h4>Borrow/Return records in range</h4>
+          <div class="table-responsive"><table class="table" id="booksTable"><thead><tr><th>Date</th><th>Type</th><th>Book Title</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+<script>
+// small styles for cards and table layout inside this page
+var styleEl = document.createElement('style');
+styleEl.innerHTML = `
+  .cards-row{display:flex;gap:12px;margin:12px 0 18px}
+  .card{background:#fff;border-radius:6px;box-shadow:0 1px 6px rgba(0,0,0,.12);padding:12px;min-width:160px}
+  .card-header{font-weight:700;color:#333;margin-bottom:8px}
+  .card-body{font-size:18px;color:#042f3b}
+  .table-responsive{background:#fff;padding:8px;border-radius:6px;box-shadow:0 1px 6px rgba(0,0,0,.06);margin-top:8px}
+  #booksTable tbody tr td, #finesTable tbody tr td{padding:8px}
+`;
+document.head.appendChild(styleEl);
+async function daily(){
+  const date=document.getElementById('rdate').value;
+  const res = await fetch('/clerk/reports/daily'+(date?('?date='+date):''));
+  const j = await res.json();
+  const container = document.getElementById('dailyCards');
+  container.innerHTML = '';
+  if(!j || !j.data || j.data.length===0){
+    const no = document.createElement('div'); no.className='card'; no.innerText = 'No activity for selected date.'; container.appendChild(no); return;
+  }
+  j.data.forEach(item=>{
+    const c = document.createElement('div'); c.className='card';
+    const h = document.createElement('div'); h.className='card-header'; h.innerText = item.type.charAt(0).toUpperCase() + item.type.slice(1);
+    const b = document.createElement('div'); b.className='card-body'; b.innerText = item.count;
+    c.appendChild(h); c.appendChild(b); container.appendChild(c);
+  });
+}
+
+async function fines(){
+  const from=document.getElementById('from').value; const to=document.getElementById('to').value;
+  const res = await fetch(`/clerk/reports/fines?from=${from||''}&to=${to||''}`);
+  const j = await res.json();
+  document.getElementById('fTotal').innerText = j.total || 0;
+  const finesArr = j.fines || [];
+  document.getElementById('fCount').innerText = finesArr.length;
+  // populate fines table
+  const finesTbody = document.querySelector('#finesTable tbody'); finesTbody.innerHTML = '';
+  finesArr.forEach(f=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${f.id}</td><td>${(f.book_title||'')}</td><td>${f.amount}</td><td>${f.paid_at}</td>`;
+    finesTbody.appendChild(tr);
+  });
+  if(finesArr.length===0){ const tr = document.createElement('tr'); tr.innerHTML = '<td colspan="4">No fines in this range.</td>'; finesTbody.appendChild(tr); }
+
+  // fetch borrow/return records in the same range and populate booksTable
+  try{
+    const r2 = await fetch(`/clerk/reports/books?from=${from||''}&to=${to||''}`);
+    const jb = await r2.json();
+    const booksTbody = document.querySelector('#booksTable tbody'); booksTbody.innerHTML = '';
+    (jb.records||[]).forEach(rec=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${rec.created_at}</td><td>${rec.type}</td><td>${rec.book_title||('#'+rec.book_id)}</td>`;
+      booksTbody.appendChild(tr);
+    });
+    if((jb.records||[]).length===0){ const tr = document.createElement('tr'); tr.innerHTML = '<td colspan="3">No borrow/return records in this range.</td>'; booksTbody.appendChild(tr); }
+  }catch(e){ const booksTbody = document.querySelector('#booksTable tbody'); booksTbody.innerHTML = '<tr><td colspan="3">No records endpoint available</td></tr>'; }
+}
+window.addEventListener('load', ()=>{document.getElementById('rbtn').addEventListener('click', daily); document.getElementById('fbtn').addEventListener('click', fines)})
+</script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f7fb;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: blueviolet;
+  color: white;
+  padding: 10px 20px;
+  flex-wrap: wrap;
+}
+
+.navbar h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+}
+
+.navbar li {
+  margin: 0 10px;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+#searchBar {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  margin-left: 10px;
+}
+
+.container {
+  width: 95%;
+  margin: 30px auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+th {
+  background-color: blueviolet;
+  color: white;
+}
+
+
+
+/**/
+.buy-btn {
+  background-color: green;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.buy-btn:hover {
+  background-color: green;
+}
+
+.not-available {
+  color: #dc3545;
+  font-weight: bold;
+}
+/*borrow css*/
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  text-align: left;
+  width: 300px;
+}
+.popup-content input {
+  width: 100%;
+  margin: 5px 0;
+  padding: 6px;
+}
+.popup-content button {
+  margin: 5px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#submitBorrow {
+  background-color: #007bff;
+  color: white;
+}
+#closePopup {
+  background-color: #ccc;
+}

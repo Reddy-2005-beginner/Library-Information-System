@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Clerk - Users</title>
+  <link rel="stylesheet" href="clerk.css">
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar will be injected by clerk-menu.js -->
+    <link rel="stylesheet" href="clerk-menu.css">
+    <script src="clerk-menu.js" defer></script>
+    <main class="main container">
+      <h1>Manage Users</h1>
+      <section>
+        <h3>Add User</h3>
+        <div class="form-row">
+          <input id="name" placeholder="Full name">
+          <input id="emp" placeholder="Employee ID">
+          <input id="mobile" placeholder="Mobile">
+          <button class="btn" id="addUser">Add</button>
+        </div>
+        <div id="msg"></div>
+      </section>
+
+      <section>
+        <h3>Existing Users</h3>
+        <table class="table" id="usersTable">
+          <thead><tr><th>ID</th><th>Name</th><th>Emp ID</th><th>Mobile</th><th>Action</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+<script>
+async function fetchUsers(){
+  const r = await fetch('/api/users');
+  const data = await r.json();
+  const tbody = document.querySelector('#usersTable tbody');
+  tbody.innerHTML = '';
+  (data||[]).forEach(u=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${u.id}</td><td>${u.name}</td><td>${u.employee_id||''}</td><td>${u.mobile||''}</td><td><button onclick="del(${u.id})">Delete</button></td>`;
+    tbody.appendChild(tr);
+  })
+}
+
+async function addUser(){
+  const name=document.getElementById('name').value; const emp=document.getElementById('emp').value; const mobile=document.getElementById('mobile').value;
+  const res = await fetch('/clerk/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,employee_id:emp,mobile})});
+  const j = await res.json(); document.getElementById('msg').innerText = JSON.stringify(j);
+  fetchUsers();
+}
+async function del(id){ if(!confirm('Delete user?')) return; await fetch('/clerk/users/'+id,{method:'DELETE'}); fetchUsers(); }
+
+window.addEventListener('load', ()=>{ document.getElementById('addUser').addEventListener('click', addUser); fetchUsers(); })
+</script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!--<!DOCTYPE html>-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Book Page</title>
+  <link rel="stylesheet" href="book.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <h2>📚 Library System</h2>
+    <ul>
+      <li><a href="#" onclick="filterBooks('all')">All</a></li>
+      <li><a href="#" onclick="filterBooks('new')">New Books</a></li>
+      <li><a href="#" onclick="filterBooks('old')">Old Books</a></li>
+      <li><a href="#" onclick="filterBooks('issue')">Issue</a></li>
+      <li><a href="#" onclick="filterBooks('return')">Return</a></li>
+    </ul>
+    <input type="text" id="searchBar" placeholder="🔍 Search by title or author..." onkeyup="searchBooks()">
+  </nav>
+
+  <!-- Table -->
+  <div id="booksContainer">
+    <table id="bookTable">
+      <thead>
+        <tr>
+          <th>Serial No</th>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Copies</th>
+          <th>ISBN</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

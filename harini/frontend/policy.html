@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Clerk - Policy</title>
+  <link rel="stylesheet" href="clerk.css">
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar will be injected by clerk-menu.js -->
+    <link rel="stylesheet" href="clerk-menu.css">
+    <script src="clerk-menu.js" defer></script>
+    <main class="main container">
+      <h1>Library Policy Management</h1>
+      <div class="form-row">
+        <input id="max" placeholder="Max borrow limit" type="number">
+        <input id="duration" placeholder="Borrow duration (days)" type="number">
+        <input id="fine" placeholder="Fine per day" type="number">
+        <button class="btn" id="save">Save</button>
+      </div>
+      <div id="msg"></div>
+
+      <div id="policyCard" class="card" style="margin-bottom:18px;padding:12px;max-width:900px">
+        <div id="policyText">Loading policy...</div>
+      </div>
+
+      <h3>Reservation Requests</h3>
+      <div id="reservations"></div>
+
+      <h3 style="margin-top:24px">User Search / Add</h3>
+      <div style="max-width:800px">
+        <div class="form-row">
+          <input id="userSearch" placeholder="Search users by name" />
+          <button class="btn" id="searchBtn">Search</button>
+        </div>
+        <div id="searchResults" style="margin-top:8px"></div>
+
+        <h4 style="margin-top:12px">Add new user</h4>
+        <div class="form-row">
+          <input id="new_name" placeholder="Full name">
+          <input id="new_emp" placeholder="Employee ID">
+          <input id="new_mobile" placeholder="Mobile">
+          <button class="btn" id="addNew">Add</button>
+        </div>
+        <div id="addMsg"></div>
+      </div>
+    </main>
+  </div>
+<script>
+async function save(){
+  const max=document.getElementById('max').value; const duration=document.getElementById('duration').value; const fine=document.getElementById('fine').value;
+  const res = await fetch('/clerk/policy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({max_borrow_limit:max,borrow_duration_days:duration,fine_per_day:fine})});
+  const j=await res.json(); document.getElementById('msg').innerText = JSON.stringify(j)
+}
+async function loadReservations(){
+  // For now we'll try to fetch /api/reservations if it exists; fallback to placeholder
+  try{
+    const r = await fetch('/api/reservations');
+    const data = await r.json();
+    const div = document.getElementById('reservations');
+    div.innerHTML = '';
+    (data||[]).forEach(rq=>{
+      const el = document.createElement('div'); el.innerHTML = `#${rq.id} - ${rq.user_name} - ${rq.book_title} <button onclick="approve(${rq.id})">Approve</button> <button onclick="reject(${rq.id})">Reject</button>`;
+      div.appendChild(el);
+    })
+  }catch(e){ document.getElementById('reservations').innerText = 'No reservations endpoint available'; }
+}
+async function approve(id){ await fetch('/clerk/reservations/'+id+'/approve',{method:'POST'}); loadReservations(); }
+async function reject(id){ const reason=prompt('Reason'); await fetch('/clerk/reservations/'+id+'/reject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reason})}); loadReservations(); }
+</script>
+<script>
+// load current policy and display human-friendly text
+async function loadPolicy(){
+  try{
+    const r = await fetch('/clerk/policy');
+    const j = await r.json();
+    const p = (j && j.policy) ? j.policy : { max_borrow_limit:3, borrow_duration_days:14, fine_per_day:20};
+    const el = document.getElementById('policyText');
+    el.innerHTML = `<strong>Max borrow limit:</strong> ${p.max_borrow_limit} &nbsp; <strong>Duration:</strong> ${p.borrow_duration_days} days &nbsp; <strong>Fine/day:</strong> ${p.fine_per_day}5 Rupees<br><br>
+      This policy controls the maximum simultaneous borrows per user, the default borrowing period, and the per-day late fee. Update values above and click Save to apply changes.`;
+    // also populate inputs
+    document.getElementById('max').value = p.max_borrow_limit;
+    document.getElementById('duration').value = p.borrow_duration_days;
+    document.getElementById('fine').value = p.fine_per_day;
+  }catch(e){ console.error('policy load', e); }
+}
+
+// user search and add
+async function searchUsers(){
+  const q = document.getElementById('userSearch').value.toLowerCase();
+  try{
+    const r = await fetch('/api/users');
+    const list = await r.json();
+    const matches = (list||[]).filter(u => (u.name || '').toLowerCase().includes(q));
+    const out = document.getElementById('searchResults'); out.innerHTML = '';
+    if(matches.length===0){ out.innerText = 'No matches'; return; }
+    matches.forEach(u=>{
+      const d = document.createElement('div'); d.style.padding='6px 0'; d.innerHTML = `${u.id} - <strong>${u.name}</strong> (${u.employee_id||''}) <button data-id="${u.id}" class="selectUser">Select</button>`;
+      out.appendChild(d);
+    });
+    document.querySelectorAll('.selectUser').forEach(btn=>{ btn.addEventListener('click', (ev)=>{ const id = btn.getAttribute('data-id'); alert('Selected user id: '+id); }); });
+  }catch(e){ console.error(e); document.getElementById('searchResults').innerText = 'Error searching users'; }
+}
+
+async function addNewUser(){
+  const name = document.getElementById('new_name').value; const emp = document.getElementById('new_emp').value; const mobile = document.getElementById('new_mobile').value;
+  if(!name) { document.getElementById('addMsg').innerText = 'Name required'; return; }
+  try{
+    const r = await fetch('/clerk/users',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ name, employee_id: emp, mobile }) });
+    const j = await r.json(); document.getElementById('addMsg').innerText = JSON.stringify(j);
+    // refresh search results
+    searchUsers();
+  }catch(e){ document.getElementById('addMsg').innerText = 'Error adding user'; }
+}
+
+window.addEventListener('load', ()=>{
+  document.getElementById('save').addEventListener('click', async ()=>{ await save(); await loadPolicy(); });
+  loadReservations();
+  loadPolicy();
+  document.getElementById('searchBtn').addEventListener('click', searchUsers);
+  document.getElementById('userSearch').addEventListener('keyup', function(e){ if(e.key==='Enter'){ searchUsers(); } });
+  document.getElementById('addNew').addEventListener('click', addNewUser);
+});
+</script>
+</body>
+</html>

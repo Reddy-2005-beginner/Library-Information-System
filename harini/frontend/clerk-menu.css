@@ -1,0 +1,79 @@
+/* Shared animated sidebar styles for ClerkRole pages */
+body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color:#26394E; }
+#menu { top: 0; height: 100vh; position: fixed; background-color: #194cb956; width: 300px; transition: 400ms all cubic-bezier(0.19, 1, 0.22, 1); transform: translateX(-100%); left: 60px; z-index: 9999; overflow: visible; }
+#menu.expanded { transform: translateX(0%); left: 0px; }
+#menu .menu-inner { width: 100%; height: 100%; position: relative; padding-top: 40px; overflow-y: auto; -webkit-overflow-scrolling: touch; 
+  /* hide the visual scrollbar but keep scrolling usable */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+/* hide webkit scrollbar */
+#menu .menu-inner::-webkit-scrollbar{ width: 0; height: 0; }
+#blob { top: 0; z-index: -1; right: 60px; transform: translateX(100%); height: 100%; position: absolute; pointer-events: none; }
+#blob-path { fill:  #6980ffb9; }
+.hamburger { right: 20px; position: absolute; width: 20px; height: 20px; margin-top: -10px; cursor: pointer; }
+.hamburger .line { width: 100%; height: 4px; background-color: #ed1b1b; position: absolute; }
+.hamburger .line:nth-child(2) { top: 50%; margin-top: -2px; }
+.hamburger .line:nth-child(3) { bottom: 0; }
+#menu ul { padding: 0; list-style: none; width: 80%; margin-left: 10%; }
+#menu ul li { color: #fff; font-family: sans-serif; padding: 10px 0; }
+#menu .nav-link { color: #fbfdff; text-decoration: none; display:block; padding:6px 10px; background:transparent; border-radius:4px }
+#menu .nav-link.active { background: rgba(0,0,0,0.08); }
+#categoryList { margin-top:8px }
+.category-item { padding:6px 8px; color:#d6eefc; cursor:pointer }
+
+/* When menu is open, prevent body scrolling so the sidebar can scroll independently */
+body.clerk-no-scroll { overflow: hidden; height: 100vh; }
+
+/* Make sure menu list doesn't show its own horrid scrollbar on small screens */
+#menu ul { max-height: calc(100vh - 120px); overflow-y: auto; 
+  scrollbar-width: none; -ms-overflow-style: none; }
+#menu ul::-webkit-scrollbar{ width: 0; height: 0; }
+
+/* Push page content right so menu doesn't overlap */
+.layout { margin-left: 0; }
+@media (min-width: 800px) {
+  .layout { margin-left: 0; }
+  main.main.container { padding-left: 40px; }
+}
+
+/* --- Hover / Flyover polish --- */
+/* make the menu feel elevated when open */
+#menu { will-change: transform; backface-visibility: hidden; }
+#menu.expanded { box-shadow: 8px 12px 40px rgba(5,18,40,0.45); backdrop-filter: blur(6px) saturate(120%); }
+
+/* smooth, snappy hover for links */
+#menu .menu-inner .nav-link,
+#menu .menu-inner .category-item {
+  transition: transform 220ms cubic-bezier(.2,.9,.2,1),
+              box-shadow 220ms ease,
+              background 180ms ease,
+              color 160ms ease;
+  will-change: transform;
+}
+
+#menu .menu-inner .nav-link:hover {
+  transform: translateX(8px) scale(1.02);
+  background: linear-gradient(90deg, rgba(109,162,255,0.12), rgba(255,255,255,0.02));
+  box-shadow: 0 10px 24px rgba(10,36,70,0.18);
+  color: #fff;
+}
+
+#menu .menu-inner .category-item:hover {
+  transform: translateX(6px) scale(1.01);
+  background: rgba(8, 38, 69, 0.32);
+  box-shadow: 0 8px 18px rgba(6,24,48,0.12);
+}
+
+/* subtly lift the hamburger when the pointer approaches */
+.hamburger { transition: transform 260ms cubic-bezier(.2,.9,.2,1), box-shadow 260ms ease; }
+.hamburger:hover { transform: translateX(6px); box-shadow: 0 8px 22px rgba(0,0,0,0.18); }
+
+/* make the inner list items feel like floating cards on hover */
+#menu ul li { transition: transform 220ms ease, opacity 220ms ease; }
+#menu ul li:hover { opacity: 1; }
+
+/* small accessibility: focus styles for keyboard users */
+#menu .menu-inner .nav-link:focus { outline: 3px solid rgba(96,150,255,0.18); outline-offset: 2px; }
+

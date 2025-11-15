@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Library Information System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+         * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #fca311;
+            --danger: #e63946;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+     .logo {
+    display: flex;
+    align-items: center;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.logo-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 15px;
+    margin-left: 0;
+    border: 3px solid white;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    animation: pulse 2s infinite;
+    flex-shrink: 0; 
+}
+
+.logo-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    border-radius: 50%; 
+    display: block; 
+}
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+             flex-wrap: nowrap;
+        }
+
+        nav ul li {
+            margin-left: 5px;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 15px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+             white-space: nowrap;
+        }
+
+        nav ul li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        nav ul li a:hover::before {
+            left: 100%;
+        }
+
+        nav ul li a i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Profile Page Styles */
+        .profile-page {
+            flex: 1;
+            padding: 40px 0;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .page-title p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .profile-container {
+            display: flex;
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .profile-sidebar {
+            flex: 1;
+            max-width: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            height: fit-content;
+        }
+
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            overflow: hidden;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+        }
+
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-picture .edit-icon {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: var(--accent);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .profile-role {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 25px 0;
+            padding: 15px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .profile-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+       .profile-actions button {
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    color: white;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.profile-actions button:hover {
+    background: #e11570;
+    border-color: #e11570;
+}
+        .profile-actions .btn-accent {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .profile-actions .btn-accent:hover {
+            background: #e11570;
+            border-color: #e11570;
+        }
+
+        .profile-content {
+            flex: 2;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-section {
+            margin-bottom: 30px;
+        }
+
+        .profile-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-section h3 i {
+            color: var(--accent);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-item {
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .edit-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 1rem;
+            margin-left: 10px;
+            transition: all 0.3s;
+        }
+
+        .edit-btn:hover {
+            color: #e11570;
+        }
+
+        /* Footer Styles */
+        footer {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .copyright {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .profile-container {
+                flex-direction: column;
+            }
+            
+            .profile-sidebar {
+                max-width: 100%;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+            
+            .page-title h2 {
+                font-size: 2rem;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .profile-picture {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .profile-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .profile-section {
+                padding: 20px;
+            }
+        }
+
+
+         .user-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-actions button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: all 0.3s;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .user-actions button:hover {
+            background-color: #e11570;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-image">
+                        <img src="images/logo.jpg" alt="College Logo" class="logo-image">
+                    </div>
+                    <h1>Library Information System</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="homepage.html" class="active"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="josh1.html"><i class="fas fa-book"></i> Books</a></li>
+                        <li><a href="members.html"><i class="fas fa-users"></i> Members</a></li>
+                        <li><a href="#"><i class="fas fa-user-tie"></i> Librarian</a></li>
+                        <li><a href="penalties.html"><i class="fas fa-user-cog"></i>Penalties</a></li>
+                        <li><a href="reports.html"><i class="fas fa-user-cog"></i>Reports</a></li>
+                        <li><a href="profile1.html"><i class="fas fa-user-circle"></i>MyProfile</a></li>
+                    </ul>
+                </nav> 
+     
+                 <div class="user-actions">
+                        <button id="loginBtn"><i class="fas fa-sign-in-alt"></i> Logout</button>
+                      
+                    </div>
+                
+            </div>
+        </div>
+    </header>
+
+    <!-- Profile Page -->
+    <div class="profile-page">
+        <div class="container">
+            <div class="page-title">
+                <h2>My Profile</h2>
+                <p>Manage your account information and preferences</p>
+            </div>
+            
+            <div class="profile-container">
+                <div class="profile-sidebar">
+                    <div class="profile-picture">
+                        <img src="images/user.jpg" alt="Profile Picture" id="profileImage">
+                        <div class="edit-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                    </div>
+                    <h2 class="profile-name" id="profileFullName">Loading...</h2>
+                    <p class="profile-role" id="profileRole">Library Member</p>
+                    
+                    <div class="profile-stats">
+                        <div class="stat">
+                            <div class="stat-value" id="booksBorrowed">0</div>
+                            <div class="stat-label">Books Borrowed</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="booksReturned">0</div>
+                            <div class="stat-label">Books Returned</div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-actions">
+                        <button class="btn-accent" id="editProfileBtn">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </button>
+                        <button id="changePasswordBtn">
+                            <i class="fas fa-key"></i> Change Password
+                        </button>
+                        <button id="notificationSettingsBtn">
+                            <i class="fas fa-bell"></i> Notifications
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="profile-content">
+                    <div class="profile-section">
+                        <h3><i class="fas fa-user"></i> Personal Information</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Full Name</div>
+                                <div class="info-value" id="infoFullName">Loading...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Username</div>
+                                <div class="info-value" id="infoUsername">Loading...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Email Address</div>
+                                <div class="info-value" id="infoEmail">Loading...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Phone Number</div>
+                                <div class="info-value" id="infoPhone">Not provided</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Date of Birth</div>
+                                <div class="info-value" id="infoDob">Not provided</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Address</div>
+                                <div class="info-value" id="infoAddress">Not provided</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-section">
+                        <h3><i class="fas fa-book"></i> Library Information</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Member ID</div>
+                                <div class="info-value" id="infoMemberId">Loading...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Membership Type</div>
+                                <div class="info-value" id="infoMembershipType">Student</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Membership Since</div>
+                                <div class="info-value" id="infoMembershipDate">Loading...</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Current Books</div>
+                                <div class="info-value" id="infoCurrentBooks">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-section">
+                        <h3><i class="fas fa-cog"></i> Account Settings</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Email Notifications</div>
+                                <div class="info-value">
+                                    Enabled
+                                    <button class="edit-btn"><i class="fas fa-toggle-on"></i></button>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">SMS Notifications</div>
+                                <div class="info-value">
+                                    Disabled
+                                    <button class="edit-btn"><i class="fas fa-toggle-off"></i></button>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Language</div>
+                                <div class="info-value">
+                                    English
+                                    <button class="edit-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Theme</div>
+                                <div class="info-value">
+                                    Light
+                                    <button class="edit-btn"><i class="fas fa-edit"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div class="copyright">
+                &copy; 2025 IIIT RKVALLEY - Central Library. All rights reserved.
+            </div>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get user data from localStorage
+        const userData = JSON.parse(localStorage.getItem('user'));
+        
+        // If no user data, redirect to login
+        if (!userData) {
+            alert('Please login to access your profile');
+            window.location.href = 'index.html';
+            return;
+        }
+        
+        // Load profile data
+        loadProfileData(userData.id);
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('user');
+                window.location.href = 'index.html';
+            }
+        });
+        
+        // Edit profile button
+        document.getElementById('editProfileBtn').addEventListener('click', function() {
+            editProfile(userData.id);
+        });
+        
+        // Change password button
+        document.getElementById('changePasswordBtn').addEventListener('click', function() {
+            changePassword(userData.id);
+        });
+        
+        // Notification settings button
+        document.getElementById('notificationSettingsBtn').addEventListener('click', function() {
+            notificationSettings();
+        });
+        
+        // Toggle buttons for settings
+        const toggleButtons = document.querySelectorAll('.edit-btn');
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                if (icon.classList.contains('fa-toggle-on')) {
+                    icon.classList.remove('fa-toggle-on');
+                    icon.classList.add('fa-toggle-off');
+                    this.parentElement.textContent = 'Disabled';
+                    this.parentElement.appendChild(this);
+                } else if (icon.classList.contains('fa-toggle-off')) {
+                    icon.classList.remove('fa-toggle-off');
+                    icon.classList.add('fa-toggle-on');
+                    this.parentElement.textContent = 'Enabled';
+                    this.parentElement.appendChild(this);
+                } else {
+                    // For edit buttons that aren't toggles
+                    const currentValue = this.parentElement.textContent.replace('Edit', '').trim();
+                    const newValue = prompt('Enter new value:', currentValue);
+                    if (newValue) {
+                        this.parentElement.textContent = newValue;
+                        this.parentElement.appendChild(this);
+                    }
+                }
+            });
+        });
+    });
+
+    // Function to load profile data from backend
+    async function loadProfileData(userId) {
+        try {
+            showLoadingState();
+            
+            const response = await fetch(`http://localhost:5000/api/users/profile/${userId}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                const profile = data.profile;
+                updateProfileUI(profile);
+            } else {
+                // If API fails, use localStorage data as fallback
+                const userData = JSON.parse(localStorage.getItem('user'));
+                updateProfileUI(userData);
+                console.warn('Using localStorage data as fallback');
+            }
+        } catch (error) {
+            console.error('Error loading profile:', error);
+            // Use localStorage data as fallback
+            const userData = JSON.parse(localStorage.getItem('user'));
+            updateProfileUI(userData);
+            console.warn('Using localStorage data due to connection error');
+        }
+    }
+
+    // Function to update the profile UI with user data
+    function updateProfileUI(profile) {
+        console.log('Updating profile with:', profile);
+        
+        // Personal Information - Use full_name instead of fullName
+        document.getElementById('profileFullName').textContent = profile.full_name || profile.fullName || 'User';
+        document.getElementById('infoFullName').textContent = profile.full_name || profile.fullName || 'Not provided';
+        document.getElementById('infoUsername').textContent = profile.username || 'Not provided';
+        document.getElementById('infoEmail').textContent = profile.email || 'Not provided';
+        
+        // Additional fields (you can add these to your registration later)
+        document.getElementById('infoPhone').textContent = profile.phone || 'Not provided';
+        document.getElementById('infoDob').textContent = profile.dob || 'Not provided';
+        document.getElementById('infoAddress').textContent = profile.address || 'Not provided';
+        
+        // Library Information
+        document.getElementById('infoMemberId').textContent = profile.memberId || `LIB${profile.id.toString().padStart(6, '0')}`;
+        document.getElementById('infoMembershipDate').textContent = profile.membershipDate || new Date().toLocaleDateString();
+        document.getElementById('infoMembershipType').textContent = profile.membershipType || 'Student';
+        
+        // Statistics
+        document.getElementById('booksBorrowed').textContent = profile.booksBorrowed || '0';
+        document.getElementById('booksReturned').textContent = profile.booksReturned || '0';
+        document.getElementById('infoCurrentBooks').textContent = profile.currentBooks || '0';
+        
+        // Update localStorage with fresh data
+        const updatedUserData = {
+            ...JSON.parse(localStorage.getItem('user')),
+            ...profile
+        };
+        localStorage.setItem('user', JSON.stringify(updatedUserData));
+        
+        hideLoadingState();
+    }
+
+    // Show loading state
+    function showLoadingState() {
+        const elements = document.querySelectorAll('#profileFullName, #infoFullName, #infoUsername, #infoEmail, #infoMemberId, #infoMembershipDate');
+        elements.forEach(el => {
+            el.textContent = 'Loading...';
+        });
+    }
+
+    // Hide loading state
+    function hideLoadingState() {
+        // Loading state is automatically removed when data is populated
+    }
+
+    // Edit Profile Function
+    async function editProfile(userId) {
+        const userData = JSON.parse(localStorage.getItem('user'));
+        
+        const newName = prompt('Enter your full name:', userData.full_name || userData.fullName);
+        const newEmail = prompt('Enter your email:', userData.email);
+        const newPhone = prompt('Enter your phone number:', userData.phone || '');
+        const newDob = prompt('Enter your date of birth (YYYY-MM-DD):', userData.dob || '');
+        const newAddress = prompt('Enter your address:', userData.address || '');
+        
+        if (newName) {
+            try {
+                const response = await fetch(`http://localhost:5000/api/users/profile/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        full_name: newName,
+                        email: newEmail,
+                        phone: newPhone,
+                        dob: newDob,
+                        address: newAddress
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Update in UI
+                    document.getElementById('profileFullName').textContent = newName;
+                    document.getElementById('infoFullName').textContent = newName;
+                    document.getElementById('infoEmail').textContent = newEmail;
+                    document.getElementById('infoPhone').textContent = newPhone || 'Not provided';
+                    document.getElementById('infoDob').textContent = newDob || 'Not provided';
+                    document.getElementById('infoAddress').textContent = newAddress || 'Not provided';
+                    
+                    // Update in localStorage
+                    const updatedUserData = {
+                        ...userData,
+                        full_name: newName,
+                        email: newEmail,
+                        phone: newPhone,
+                        dob: newDob,
+                        address: newAddress
+                    };
+                    localStorage.setItem('user', JSON.stringify(updatedUserData));
+                    
+                    alert('Profile updated successfully!');
+                } else {
+                    alert('Error updating profile: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('Error updating profile. Please try again.');
+            }
+        }
+    }
+
+    // Change Password Function
+    function changePassword(userId) {
+        const currentPassword = prompt('Enter current password:');
+        if (currentPassword) {
+            const newPassword = prompt('Enter new password:');
+            const confirmPassword = prompt('Confirm new password:');
+            
+            if (newPassword && newPassword === confirmPassword) {
+                if (newPassword.length < 6) {
+                    alert('Password must be at least 6 characters long!');
+                    return;
+                }
+                
+                // Here you would make an API call to change password
+                alert('Password change functionality would be implemented here with backend API');
+            } else {
+                alert('Passwords do not match!');
+            }
+        }
+    }
+
+    // Notification Settings Function
+    function notificationSettings() {
+        alert('Notification settings would allow you to manage email and SMS notifications for book due dates, new arrivals, etc.');
+    }
+</script>
+</body>
+</html>

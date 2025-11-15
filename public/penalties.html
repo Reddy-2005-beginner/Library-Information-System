@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penalties Management - Library Information System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+       * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #fca311;
+            --danger: #e63946;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+     .logo {
+    display: flex;
+    align-items: center;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.logo-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 15px;
+    margin-left: 0;
+    border: 3px solid white;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    animation: pulse 2s infinite;
+    flex-shrink: 0; 
+}
+
+.logo-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    border-radius: 50%; 
+    display: block; 
+}
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+             flex-wrap: nowrap;
+        }
+
+        nav ul li {
+            margin-left: 5px;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 15px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+             white-space: nowrap;
+        }
+
+        nav ul li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        nav ul li a:hover::before {
+            left: 100%;
+        }
+
+        nav ul li a i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Page Content */
+        .page-content {
+            padding: 40px 0;
+            flex: 1;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slideUp 0.8s ease-out 0.3s both;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            color: var(--dark);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease-out;
+            cursor: pointer;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-right: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .card h2 {
+            color: var(--secondary);
+            font-size: 1.5rem;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Table Styles */
+        .table-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease-out;
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        .data-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-overdue {
+            background: #ffe6e6;
+            color: #d63031;
+        }
+
+        .status-paid {
+            background: #e6f7e6;
+            color: #00b894;
+        }
+
+        .status-pending {
+            background: #fff8e6;
+            color: #fdcb6e;
+        }
+
+        .status-sent {
+            background: #e6f3ff;
+            color: #0984e3;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            background-color: #3a56d4;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+
+        .btn-success:hover {
+            background-color: #3ab4d4;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+        }
+
+        .btn-warning:hover {
+            background-color: #e3940a;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background-color: #d63031;
+        }
+
+        /* Forms */
+        .form-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--secondary);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        /* Improved Reminder Templates */
+        .reminder-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .reminder-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .reminder-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: white;
+            margin-right: 15px;
+        }
+
+        .reminder-info {
+            flex: 1;
+        }
+
+        .reminder-info h3 {
+            color: var(--secondary);
+            margin-bottom: 5px;
+            font-size: 1.4rem;
+        }
+
+        .reminder-info p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .reminder-preview {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid var(--primary);
+        }
+
+        .reminder-preview h4 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .reminder-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .reminder-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #3a56d4;
+            transform: translateY(-2px);
+        }
+
+        .back-btn i {
+            margin-right: 8px;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 25px;
+            color: var(--success);
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--accent);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-section a {
+            color: #e0e0e0;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-section a i {
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
+
+        .footer-section a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #b0b0b0;
+            font-size: 0.9rem;
+        }
+
+        .social-icons {
+            display: flex;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            margin-right: 10px;
+            transition: all 0.3s;
+        }
+
+        .social-icons a:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav ul {
+                margin-top: 20px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            nav ul li {
+                margin: 5px;
+            }
+
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .table-container {
+                padding: 20px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            .reminder-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .logo-image {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .data-table {
+                font-size: 0.9rem;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 10px 8px;
+            }
+        }
+          .user-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-actions button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: all 0.3s;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .user-actions button:hover {
+            background-color: #e11570;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+   <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-image">
+                        <img src="images/logo.jpg" alt="College Logo" class="logo-image">
+                    </div>
+                    <h1>Penalties page</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="homepage.html"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="josh1.html"><i class="fas fa-book"></i> Books</a></li>
+                        <li><a href="members.html"><i class="fas fa-users"></i> Members</a></li>
+                        <li><a href="librarian.html"><i class="fas fa-user-tie"></i> Librarian</a></li>
+                        <li><a href="penalties.html" class="active"><i class="fas fa-user-cog"></i>Penalties</a></li>
+                        <li><a href="reports.html"><i class="fas fa-user-cog"></i>Reports</a></li>
+                        <li><a href="profile.html"><i class="fas fa-user-circle"></i>My Profile</a></li>
+                    </ul>
+                </nav> 
+     
+                 <div class="user-actions">
+                        <button id="loginBtn"><i class="fas fa-sign-in-alt"></i> Logout</button>
+                      
+                    </div>
+                
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="page-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Penalties Management</h1>
+                <p>Manage overdue books, calculate penalties, and send reminders to members</p>
+            </div>
+
+            <!-- Overview Cards (Visible by default) -->
+            <div id="cards-section" class="cards-grid">
+                <div class="card" data-tab="overdue">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h2>Overdue Books</h2>
+                    </div>
+                    <p>View and manage all books that are past their due date. Track overdue durations and calculate penalties.</p>
+                    <div class="action-buttons">
+                        <button class="btn btn-warning">
+                            <i class="fas fa-list"></i> View Overdue List
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card" data-tab="calculate">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <h2>Calculate Penalties</h2>
+                    </div>
+                    <p>Calculate penalties for overdue books based on duration and member type. Apply discounts or waivers if applicable.</p>
+                    <div class="action-buttons">
+                        <button class="btn btn-success">
+                            <i class="fas fa-calculator"></i> Calculate Penalty
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card" data-tab="reminders">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h2>Print Reminders</h2>
+                    </div>
+                    <p>Generate and send reminder notifications to members with overdue books. Customize reminder templates.</p>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-print"></i> Print Reminders
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overdue Books Tab -->
+            <div class="tab-content" id="overdue-tab">
+                <button class="back-btn" id="backFromOverdue">
+                    <i class="fas fa-arrow-left"></i> Back to Main Menu
+                </button>
+                <div class="table-container">
+                    <h2 style="margin-bottom: 20px; color: var(--secondary);">Overdue Books List</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Member ID</th>
+                                <th>Member Name</th>
+                                <th>Book Title</th>
+                                <th>ISBN</th>
+                                <th>Due Date</th>
+                                <th>Days Overdue</th>
+                                <th>Penalty Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>UG2023001</td>
+                                <td>Rahul Sharma</td>
+                                <td>The Great Gatsby</td>
+                                <td>978-0743273565</td>
+                                <td>2023-10-15</td>
+                                <td>12</td>
+                                <td>₹60</td>
+                                <td><span class="status-badge status-overdue">Overdue</span></td>
+                                <td>
+                                    <button class="btn btn-warning" style="padding: 8px 12px; font-size: 0.9rem;">
+                                        <i class="fas fa-calculator"></i> Calculate
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PG2023001</td>
+                                <td>Priya Patel</td>
+                                <td>1984</td>
+                                <td>978-0451524935</td>
+                                <td>2023-10-18</td>
+                                <td>9</td>
+                                <td>₹45</td>
+                                <td><span class="status-badge status-overdue">Overdue</span></td>
+                                <td>
+                                    <button class="btn btn-warning" style="padding: 8px 12px; font-size: 0.9rem;">
+                                        <i class="fas fa-calculator"></i> Calculate
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>RS2023001</td>
+                                <td>Amit Kumar</td>
+                                <td>Pride and Prejudice</td>
+                                <td>978-0141439518</td>
+                                <td>2023-10-20</td>
+                                <td>7</td>
+                                <td>₹35</td>
+                                <td><span class="status-badge status-overdue">Overdue</span></td>
+                                <td>
+                                    <button class="btn btn-warning" style="padding: 8px 12px; font-size: 0.9rem;">
+                                        <i class="fas fa-calculator"></i> Calculate
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>FAC2023001</td>
+                                <td>Dr. Sanjay Verma</td>
+                                <td>The Lord of the Rings</td>
+                                <td>978-0544003415</td>
+                                <td>2023-10-22</td>
+                                <td>5</td>
+                                <td>₹25</td>
+                                <td><span class="status-badge status-overdue">Overdue</span></td>
+                                <td>
+                                    <button class="btn btn-warning" style="padding: 8px 12px; font-size: 0.9rem;">
+                                        <i class="fas fa-calculator"></i> Calculate
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Calculate Penalty Tab -->
+            <div class="tab-content" id="calculate-tab">
+                <button class="back-btn" id="backFromCalculate">
+                    <i class="fas fa-arrow-left"></i> Back to Main Menu
+                </button>
+                <div class="form-container">
+                    <h2 style="margin-bottom: 20px; color: var(--secondary);">Calculate Penalty</h2>
+                    <form id="penaltyForm">
+                        <div class="form-group">
+                            <label for="memberSelect">Select Member</label>
+                            <select id="memberSelect" required>
+                                <option value="">Choose a member</option>
+                                <option value="UG2023001">Rahul Sharma (UG2023001)</option>
+                                <option value="PG2023001">Priya Patel (PG2023001)</option>
+                                <option value="RS2023001">Amit Kumar (RS2023001)</option>
+                                <option value="FAC2023001">Dr. Sanjay Verma (FAC2023001)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookSelect">Select Book</label>
+                            <select id="bookSelect" required>
+                                <option value="">Choose a book</option>
+                                <option value="978-0743273565">The Great Gatsby</option>
+                                <option value="978-0451524935">1984</option>
+                                <option value="978-0141439518">Pride and Prejudice</option>
+                                <option value="978-0544003415">The Lord of the Rings</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dueDate">Due Date</label>
+                            <input type="date" id="dueDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="returnDate">Return Date</label>
+                            <input type="date" id="returnDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="penaltyRate">Penalty Rate (₹ per day)</label>
+                            <input type="number" id="penaltyRate" value="5" min="0" step="0.5" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-calculator"></i> Calculate Penalty
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <h2>Penalty Calculation Rules</h2>
+                    </div>
+                    <ul style="padding-left: 20px; margin-top: 15px;">
+                        <li style="margin-bottom: 10px;">Undergraduate Students: ₹5 per day</li>
+                        <li style="margin-bottom: 10px;">Postgraduate Students: ₹5 per day</li>
+                        <li style="margin-bottom: 10px;">Research Scholars: ₹5 per day</li>
+                        <li style="margin-bottom: 10px;">Faculty Members: ₹5 per day</li>
+                        <li style="margin-bottom: 10px;">Maximum penalty: ₹500 per book</li>
+                        <li>Grace period: 3 days (no penalty)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Print Reminders Tab - IMPROVED DESIGN -->
+            <div class="tab-content" id="reminders-tab">
+                <button class="back-btn" id="backFromReminders">
+                    <i class="fas fa-arrow-left"></i> Back to Main Menu
+                </button>
+                
+                <div class="reminder-section">
+                    <div class="reminder-header">
+                        <div class="reminder-icon" style="background: var(--warning);">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="reminder-info">
+                            <h3>First Reminder Template</h3>
+                            <p>Gentle reminder sent after 3 days past due date</p>
+                        </div>
+                    </div>
+                    
+                    <div class="reminder-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">23</div>
+                            <div class="stat-label">Sent This Month</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">78%</div>
+                            <div class="stat-label">Response Rate</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">12</div>
+                            <div class="stat-label">Books Returned</div>
+                        </div>
+                    </div>
+                    
+                    <div class="reminder-preview">
+                        <h4>Template Preview</h4>
+                        <div class="reminder-content">
+                            <p><strong>Subject:</strong> Gentle Reminder - Overdue Library Book</p>
+                            <p><strong>Dear [Member Name],</strong></p>
+                            <p>This is a friendly reminder that your book "<strong>[Book Title]</strong>" was due on <strong>[Due Date]</strong> and is now overdue by <strong>[Days Overdue]</strong> days.</p>
+                            <p>Please return the book at your earliest convenience to avoid accumulating penalties.</p>
+                            <p>If you have already returned the book, please disregard this message.</p>
+                            <p><strong>Best regards,<br>IIIT RKVALLEY Library</strong></p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-warning">
+                            <i class="fas fa-print"></i> Print Template
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-envelope"></i> Send to Selected Members
+                        </button>
+                        <button class="btn btn-success">
+                            <i class="fas fa-edit"></i> Customize Template
+                        </button>
+                    </div>
+                </div>
+
+                <div class="reminder-section">
+                    <div class="reminder-header">
+                        <div class="reminder-icon" style="background: var(--danger);">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="reminder-info">
+                            <h3>Final Notice Template</h3>
+                            <p>Urgent reminder with penalty details sent after 10 days past due date</p>
+                        </div>
+                    </div>
+                    
+                    <div class="reminder-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">8</div>
+                            <div class="stat-label">Sent This Month</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">45%</div>
+                            <div class="stat-label">Response Rate</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">5</div>
+                            <div class="stat-label">Books Returned</div>
+                        </div>
+                    </div>
+                    
+                    <div class="reminder-preview">
+                        <h4>Template Preview</h4>
+                        <div class="reminder-content">
+                            <p><strong>Subject:</strong> URGENT: Final Notice - Overdue Library Book with Penalty</p>
+                            <p><strong>Dear [Member Name],</strong></p>
+                            <p>This is a FINAL NOTICE regarding your overdue book "<strong>[Book Title]</strong>". The book was due on <strong>[Due Date]</strong> and is now <strong>[Days Overdue]</strong> days overdue.</p>
+                            <p><strong>Current Penalty: ₹[Penalty Amount]</strong></p>
+                            <p>Please return the book immediately to stop further penalty accumulation. Failure to return the book may result in suspension of library privileges.</p>
+                            <p>If you have already returned the book, please contact the library immediately.</p>
+                            <p><strong>Best regards,<br>IIIT RKVALLEY Library</strong></p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-danger">
+                            <i class="fas fa-print"></i> Print Template
+                        </button>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-envelope"></i> Send to Selected Members
+                        </button>
+                        <button class="btn btn-success">
+                            <i class="fas fa-edit"></i> Customize Template
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <h2 style="margin-bottom: 20px; color: var(--secondary);">Reminder History</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Member ID</th>
+                                <th>Member Name</th>
+                                <th>Book Title</th>
+                                <th>Reminder Type</th>
+                                <th>Sent Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>UG2023001</td>
+                                <td>Rahul Sharma</td>
+                                <td>The Great Gatsby</td>
+                                <td>First Reminder</td>
+                                <td>2023-10-18</td>
+                                <td><span class="status-badge status-sent">Sent</span></td>
+                                <td>
+                                    <button class="btn btn-primary" style="padding: 8px 12px; font-size: 0.9rem;">
+                                        <i class="fas fa-redo"></i> Resend
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PG2023001</td>
+                                <td>Priya Patel</td>
+                                <td>1984</td>
+                                <td>First Reminder</td>
+                                <td>2023-10-21</td>
+                                <td><span class="status-badge status-sent">Sent</span></td>
+                                <td>
+                                    <button class="btn btn-primary" style="padding: 8px 12px; font-size: 0.9rem;">
+                                        <i class="fas fa-redo"></i> Resend
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>RS2023001</td>
+                                <td>Amit Kumar</td>
+                                <td>Pride and Prejudice</td>
+                                <td>Final Notice</td>
+                                <td>2023-10-23</td>
+                                <td><span class="status-badge status-pending">Pending</span></td>
+                                <td>
+                                    <button class="btn btn-warning" style="padding: 8px 12px; font-size: 0.9rem;">
+                                        <i class="fas fa-envelope"></i> Send Now
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="homepage.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Book Catalog</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> My Account</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Reservations</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Member Services</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Issue Books</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Return Books</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Renew Books</a></li>
+                        <li><a href="penalties.html"><i class="fas fa-chevron-right"></i> Pay Penalties</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Admin Functions</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Manage Books</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Manage Members</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Generate Reports</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> System Settings</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> Library Help Desk: (123) 456-7890</li>
+                        <li><i class="fas fa-envelope"></i> Email: library@iiitrkvalley.ac.in</li>
+                        <li><i class="fas fa-clock"></i> Hours: Mon-Fri 9AM-6PM</li>
+                    </ul>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 IIIT RKVALLEY Library Information System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add animation to navigation items
+            const navItems = document.querySelectorAll('nav ul li a');
+            navItems.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            // Get DOM elements
+            const cardsSection = document.getElementById('cards-section');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const cards = document.querySelectorAll('.card');
+
+            // Card click functionality
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Hide cards section
+                    cardsSection.style.display = 'none';
+                    
+                    // Hide all tab contents
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Show selected tab content
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+
+
+
+            // logout
+            
+            
+            document.getElementById('loginBtn').addEventListener('click', function(event) {
+    event.preventDefault();
+    if (confirm('Are you sure you want to exit?')) {
+        window.location.href = 'index.html';
+    }
+    // If 'No', do nothing and remain on the same page
+});
+
+
+
+
+            // Back button functionality
+            document.getElementById('backFromOverdue').addEventListener('click', function() {
+                showCardsSection();
+            });
+
+            document.getElementById('backFromCalculate').addEventListener('click', function() {
+                showCardsSection();
+            });
+
+            document.getElementById('backFromReminders').addEventListener('click', function() {
+                showCardsSection();
+            });
+
+            function showCardsSection() {
+                // Show cards section
+                cardsSection.style.display = 'grid';
+                
+                // Hide all tab contents
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+            }
+
+
+
+
+            // Penalty calculation form submission
+            const penaltyForm = document.getElementById('penaltyForm');
+            penaltyForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const dueDate = new Date(document.getElementById('dueDate').value);
+                const returnDate = new Date(document.getElementById('returnDate').value);
+                const penaltyRate = parseFloat(document.getElementById('penaltyRate').value);
+                
+                // Calculate days overdue
+                const timeDiff = returnDate.getTime() - dueDate.getTime();
+                const daysOverdue = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                
+                // Calculate penalty
+                let penaltyAmount = 0;
+                if (daysOverdue > 0) {
+                    penaltyAmount = daysOverdue * penaltyRate;
+                }
+                
+                // Show result
+                if (daysOverdue > 0) {
+                    alert(`Penalty Calculation:\n\nDays Overdue: ${daysOverdue}\nPenalty Rate: ₹${penaltyRate}/day\nTotal Penalty: ₹${penaltyAmount}`);
+                } else {
+                    alert('No penalty! The book was returned on or before the due date.');
+                }
+            });
+
+            // Print functionality
+            const printButtons = document.querySelectorAll('.btn-warning, .btn-danger');
+            printButtons.forEach(btn => {
+                if (btn.textContent.includes('Print')) {
+                    btn.addEventListener('click', function() {
+                        alert('Reminder template is ready for printing!');
+                        // In a real application, this would open a print dialog
+                        // window.print();
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

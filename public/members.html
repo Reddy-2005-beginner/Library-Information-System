@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Information System - Members</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #fca311;
+            --danger: #e63946;
+            --primary-light: #9D4EDD;
+            --primary-dark: #6A0DAD;
+            --text: #2D2D2D;
+            --shadow: 0 10px 30px rgba(138, 43, 226, 0.15);
+            --transition: all 0.3s ease;
+            --gradient: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 40px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-left: 0;
+            padding-left: 0;
+        }
+
+        .logo-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            margin-left: 0;
+            border: 3px solid white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+            flex-shrink: 0;
+        }
+
+        .logo-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            flex-wrap: nowrap;
+        }
+
+        nav ul li {
+            margin-left: 5px;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 15px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        nav ul li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        nav ul li a:hover::before {
+            left: 100%;
+        }
+
+        nav ul li a i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-actions button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: all 0.3s;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .user-actions button:hover {
+            background-color: #e11570;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+
+        /* Rest of your existing styles */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Member Types Page */
+        .page-title {
+            text-align: center;
+            color: var(--primary-dark);
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .page-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+
+        .member-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .member-card {
+            background-color: var(--light);
+            border-radius: 20px;
+            padding: 40px 25px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .member-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: var(--gradient);
+        }
+
+        .member-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(138, 43, 226, 0.25);
+            border-color: var(--accent);
+        }
+
+        .member-card i {
+            font-size: 4rem;
+            margin-bottom: 25px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 4px 8px rgba(138, 43, 226, 0.3));
+        }
+
+        .member-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .member-card p {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        /* Registration Form Page */
+        .form-container {
+            background-color: var(--light);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid #e1d5f5;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: var(--gradient);
+        }
+
+        .form-container h2 {
+            color: var(--primary-dark);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e1d5f5;
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            font-size: 1.1rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e1d5f5;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            background-color: #f9f6ff;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(138, 43, 226, 0.2);
+            background-color: white;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--gradient);
+            color: white;
+            padding: 16px 35px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 6px 15px rgba(138, 43, 226, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(138, 43, 226, 0.4);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-secondary {
+            background: #f0e6ff;
+            color: var(--primary-dark);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: #e1d5f5;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Member Details Page - Table Style */
+        .member-details {
+            background-color: var(--light);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: var(--shadow);
+            border: 1px solid #e1d5f5;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .member-details::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: var(--gradient);
+        }
+
+        .member-details h2 {
+            color: var(--primary-dark);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e1d5f5;
+            font-size: 2.2rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .member-info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .member-info-table tr {
+            transition: var(--transition);
+        }
+
+        .member-info-table tr:nth-child(even) {
+            background-color: #f9f6ff;
+        }
+
+        .member-info-table tr:nth-child(odd) {
+            background-color: #f0e6ff;
+        }
+
+        .member-info-table tr:hover {
+            background-color: #e6d9ff;
+            transform: scale(1.01);
+        }
+
+        .member-info-table th {
+            background: var(--gradient);
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .member-info-table td {
+            padding: 18px 20px;
+            font-size: 1.1rem;
+            border-bottom: 1px solid #e1d5f5;
+        }
+
+        .member-info-table .field-label {
+            font-weight: 600;
+            color: var(--primary-dark);
+            width: 35%;
+            border-right: 2px solid #e1d5f5;
+        }
+
+        .member-info-table .field-value {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .books-section {
+            margin-top: 40px;
+            display: none;
+        }
+
+        .books-section.visible {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e1d5f5;
+            font-weight: 600;
+        }
+
+        .books-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .books-table th {
+            background: var(--gradient);
+            color: white;
+            padding: 18px;
+            text-align: left;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .books-table td {
+            padding: 16px 18px;
+            font-size: 1rem;
+            border-bottom: 1px solid #e1d5f5;
+        }
+
+        .books-table tr:nth-child(even) {
+            background-color: #f9f6ff;
+        }
+
+        .books-table tr:nth-child(odd) {
+            background-color: #f0e6ff;
+        }
+
+        .books-table tr:hover {
+            background-color: #e6d9ff;
+        }
+
+        .book-status {
+            background: var(--gradient);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(138, 43, 226, 0.3);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 25px;
+            color: var(--primary-dark);
+            font-size: 1.1rem;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            align-items: center;
+        }
+
+        .no-books {
+            text-align: center;
+            padding: 40px;
+            color: #777;
+            font-style: italic;
+            font-size: 1.2rem;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .member-types {
+                grid-template-columns: 1fr;
+            }
+            
+            .member-info-table, .books-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .form-container {
+                padding: 30px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                margin: 15px 0;
+            }
+            
+            nav ul li {
+                margin: 5px;
+            }
+            
+            .member-info-table th, 
+            .member-info-table td {
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-image">
+                        <img src="images/logo.jpg" alt="College Logo" class="logo-image">
+                    </div>
+                    <h1>Members page</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="homepage.html"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="josh1.html"><i class="fas fa-book"></i> Books</a></li>
+                        <li><a href="members.html" class="active"><i class="fas fa-users"></i> Members</a></li>
+                        <li><a href="librarian.html"><i class="fas fa-user-tie"></i> Librarian</a></li>
+                        <li><a href="penalties.html"><i class="fas fa-user-cog"></i>Penalties</a></li>
+                        <li><a href="reports.html"><i class="fas fa-user-cog"></i>Reports</a></li>
+                        <li><a href="profile.html"><i class="fas fa-user-circle"></i>My Profile</a></li>
+                    </ul>
+                </nav> 
+     
+                 <div class="user-actions">
+                        <button id="loginBtn"><i class="fas fa-sign-in-alt"></i> Logout</button>
+                      
+                    </div>
+                
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Member Types Page -->
+        <div id="memberTypesPage" class="page active">
+            <h2 class="page-title">Select Member Type</h2>
+            <div class="member-types">
+                <div class="member-card" data-type="undergraduate">
+                    <i class="fas fa-user-graduate"></i>
+                    <h3>Undergraduate</h3>
+                    <p>Student pursuing bachelor's degree programs</p>
+                </div>
+                <div class="member-card" data-type="postgraduate">
+                    <i class="fas fa-user-graduate"></i>
+                    <h3>Post Graduate</h3>
+                    <p>Student pursuing master's or doctoral degree programs</p>
+                </div>
+                <div class="member-card" data-type="faculty">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <h3>Faculty</h3>
+                    <p>Teaching and research staff members</p>
+                </div>
+                <div class="member-card" data-type="research">
+                    <i class="fas fa-microscope"></i>
+                    <h3>Research Scholars</h3>
+                    <p>Researchers and academic staff members</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registration Form Page -->
+        <div id="registrationPage" class="page">
+            <div class="navigation">
+                <button id="backToMemberTypes" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Member Types
+                </button>
+            </div>
+            <div class="form-container">
+                <h2 id="formTitle">Register as <span id="memberType"></span></h2>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="name"><i class="fas fa-user"></i> Full Name</label>
+                        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="password" name="password" placeholder="Create a secure password" required>
+                    </div>
+                    
+                    <!-- Additional fields based on member type -->
+                    <div id="additionalFields"></div>
+                    
+                    <button type="submit" class="btn" style="width: 100%; margin-top: 20px;">
+                        <i class="fas fa-user-plus"></i> Register Now
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Member Details Page -->
+        <div id="memberDetailsPage" class="page">
+            <div class="navigation">
+                <button id="backToRegistration" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Registration
+                </button>
+            </div>
+            <div class="member-details">
+                <h2><i class="fas fa-id-card"></i> Member Details</h2>
+                
+                <table class="member-info-table">
+                    <tr>
+                        <th colspan="2">Personal Information</th>
+                    </tr>
+                    <tr>
+                        <td class="field-label">Name</td>
+                        <td id="detailName" class="field-value">-</td>
+                    </tr>
+                    <tr>
+                        <td class="field-label">Email</td>
+                        <td id="detailEmail" class="field-value">-</td>
+                    </tr>
+                    <tr>
+                        <td class="field-label">Member Type</td>
+                        <td id="detailType" class="field-value">-</td>
+                    </tr>
+                    <tr id="detailMemberIdRow" style="display: none;">
+                        <td class="field-label">Member ID</td>
+                        <td id="detailMemberId" class="field-value">-</td>
+                    </tr>
+                    <tr id="detailDepartmentRow" style="display: none;">
+                        <td class="field-label">Department</td>
+                        <td id="detailDepartment" class="field-value">-</td>
+                    </tr>
+                    <tr id="detailYearRow" style="display: none;">
+                        <td class="field-label">Year</td>
+                        <td id="detailYear" class="field-value">-</td>
+                    </tr>
+                    <tr id="detailProgramRow" style="display: none;">
+                        <td class="field-label">Program</td>
+                        <td id="detailProgram" class="field-value">-</td>
+                    </tr>
+                    <tr id="detailDesignationRow" style="display: none;">
+                        <td class="field-label">Designation</td>
+                        <td id="detailDesignation" class="field-value">-</td>
+                    </tr>
+                    <tr id="detailResearchRow" style="display: none;">
+                        <td class="field-label">Research Area</td>
+                        <td id="detailResearch" class="field-value">-</td>
+                    </tr>
+                </table>
+
+                <div id="booksSection" class="books-section">
+                    <h3 class="section-title"><i class="fas fa-book"></i> Borrowed Books</h3>
+                    
+                    <table class="books-table">
+                        <thead>
+                            <tr>
+                                <th>Book Title</th>
+                                <th>Author</th>
+                                <th>Date Taken</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="booksList">
+                            <!-- Books will be dynamically added here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="registerAnother" class="btn">
+                        <i class="fas fa-user-plus"></i> Register Another Member
+                    </button>
+                    <button id="backToHome" class="btn btn-secondary">
+                        <i class="fas fa-home"></i> Back to Home
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Library Information System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Page elements
+            const memberTypesPage = document.getElementById('memberTypesPage');
+            const registrationPage = document.getElementById('registrationPage');
+            const memberDetailsPage = document.getElementById('memberDetailsPage');
+            
+            // Buttons
+            const backToMemberTypes = document.getElementById('backToMemberTypes');
+            const backToRegistration = document.getElementById('backToRegistration');
+            const registerAnother = document.getElementById('registerAnother');
+            const backToHome = document.getElementById('backToHome');
+            
+            // Form elements
+            const memberCards = document.querySelectorAll('.member-card');
+            const registerForm = document.getElementById('registerForm');
+            const formTitle = document.getElementById('formTitle');
+            const memberTypeSpan = document.getElementById('memberType');
+            const additionalFields = document.getElementById('additionalFields');
+            
+            // Detail elements
+            const detailName = document.getElementById('detailName');
+            const detailEmail = document.getElementById('detailEmail');
+            const detailType = document.getElementById('detailType');
+            const detailMemberId = document.getElementById('detailMemberId');
+            const detailDepartment = document.getElementById('detailDepartment');
+            const detailYear = document.getElementById('detailYear');
+            const detailProgram = document.getElementById('detailProgram');
+            const detailDesignation = document.getElementById('detailDesignation');
+            const detailResearch = document.getElementById('detailResearch');
+            
+            const detailMemberIdRow = document.getElementById('detailMemberIdRow');
+            const detailDepartmentRow = document.getElementById('detailDepartmentRow');
+            const detailYearRow = document.getElementById('detailYearRow');
+            const detailProgramRow = document.getElementById('detailProgramRow');
+            const detailDesignationRow = document.getElementById('detailDesignationRow');
+            const detailResearchRow = document.getElementById('detailResearchRow');
+            
+            const booksSection = document.getElementById('booksSection');
+            const booksList = document.getElementById('booksList');
+            
+            // Sample book data for demonstration
+            const sampleBooks = [
+                { title: "Introduction to Algorithms", author: "Cormen, Leiserson, Rivest", takenDate: "2023-09-15", dueDate: "2023-10-15" },
+                { title: "The Great Gatsby", author: "F. Scott Fitzgerald", takenDate: "2023-10-01", dueDate: "2023-10-29" },
+                { title: "A Brief History of Time", author: "Stephen Hawking", takenDate: "2023-09-20", dueDate: "2023-10-20" }
+            ];
+
+            // Handle member card clicks
+            memberCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const memberType = this.getAttribute('data-type');
+                    const typeText = this.querySelector('h3').textContent;
+                    
+                    // Update form title
+                    memberTypeSpan.textContent = typeText;
+                    
+                    // Store the selected member type in the form
+                    registerForm.setAttribute('data-member-type', memberType);
+                    
+                    // Generate additional fields based on member type
+                    generateAdditionalFields(memberType);
+                    
+                    // Navigate to registration page
+                    showPage(registrationPage);
+                });
+            });
+
+
+            // logout
+            
+            
+            document.getElementById('loginBtn').addEventListener('click', function(event) {
+    event.preventDefault();
+    if (confirm('Are you sure you want to exit?')) {
+        window.location.href = 'index.html';
+    }
+    // If 'No', do nothing and remain on the same page
+});
+
+
+
+
+            // Generate additional form fields based on member type
+            function generateAdditionalFields(memberType) {
+                let fieldsHTML = '';
+                
+                switch(memberType) {
+                    case 'undergraduate':
+                        fieldsHTML = `
+                            <div class="form-group">
+                                <label for="studentId"><i class="fas fa-id-card"></i> Student ID</label>
+                                <input type="text" id="studentId" name="studentId" placeholder="Enter your student ID" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="department"><i class="fas fa-building"></i> Department</label>
+                                <input type="text" id="department" name="department" placeholder="Enter your department" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="year"><i class="fas fa-calendar-alt"></i> Year</label>
+                                <select id="year" name="year" required>
+                                    <option value="">Select Year</option>
+                                    <option value="1st Year">1st Year</option>
+                                    <option value="2nd Year">2nd Year</option>
+                                    <option value="3rd Year">3rd Year</option>
+                                    <option value="4th Year">4th Year</option>
+                                </select>
+                            </div>
+                        `;
+                        break;
+                    case 'postgraduate':
+                        fieldsHTML = `
+                            <div class="form-group">
+                                <label for="studentId"><i class="fas fa-id-card"></i> Student ID</label>
+                                <input type="text" id="studentId" name="studentId" placeholder="Enter your student ID" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="department"><i class="fas fa-building"></i> Department</label>
+                                <input type="text" id="department" name="department" placeholder="Enter your department" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="program"><i class="fas fa-graduation-cap"></i> Program</label>
+                                <select id="program" name="program" required>
+                                    <option value="">Select Program</option>
+                                    <option value="Masters">Masters</option>
+                                    <option value="PhD">PhD</option>
+                                </select>
+                            </div>
+                        `;
+                        break;
+                    case 'faculty':
+                        fieldsHTML = `
+                            <div class="form-group">
+                                <label for="employeeId"><i class="fas fa-id-card"></i> Employee ID</label>
+                                <input type="text" id="employeeId" name="employeeId" placeholder="Enter your employee ID" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="department"><i class="fas fa-building"></i> Department</label>
+                                <input type="text" id="department" name="department" placeholder="Enter your department" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="designation"><i class="fas fa-user-tie"></i> Designation</label>
+                                <input type="text" id="designation" name="designation" placeholder="Enter your designation" required>
+                            </div>
+                        `;
+                        break;
+                    case 'research':
+                        fieldsHTML = `
+                            <div class="form-group">
+                                <label for="employeeId"><i class="fas fa-id-card"></i> Employee ID</label>
+                                <input type="text" id="employeeId" name="employeeId" placeholder="Enter your employee ID" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="department"><i class="fas fa-building"></i> Department</label>
+                                <input type="text" id="department" name="department" placeholder="Enter your department" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="researchArea"><i class="fas fa-search"></i> Research Area</label>
+                                <input type="text" id="researchArea" name="researchArea" placeholder="Enter your research area" required>
+                            </div>
+                        `;
+                        break;
+                }
+                
+                additionalFields.innerHTML = fieldsHTML;
+            }
+
+            // Handle form submission
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const memberType = this.getAttribute('data-member-type');
+                
+                // Update member details
+                detailName.textContent = name;
+                detailEmail.textContent = email;
+                detailType.textContent = document.querySelector(`[data-type="${memberType}"] h3`).textContent;
+                
+                // Hide all additional info rows initially
+                detailMemberIdRow.style.display = 'none';
+                detailDepartmentRow.style.display = 'none';
+                detailYearRow.style.display = 'none';
+                detailProgramRow.style.display = 'none';
+                detailDesignationRow.style.display = 'none';
+                detailResearchRow.style.display = 'none';
+                
+                // Update additional fields based on member type
+                switch(memberType) {
+                    case 'undergraduate':
+                        detailMemberId.textContent = document.getElementById('studentId').value;
+                        detailDepartment.textContent = document.getElementById('department').value;
+                        detailYear.textContent = document.getElementById('year').value;
+                        detailMemberIdRow.style.display = 'table-row';
+                        detailDepartmentRow.style.display = 'table-row';
+                        detailYearRow.style.display = 'table-row';
+                        break;
+                    case 'postgraduate':
+                        detailMemberId.textContent = document.getElementById('studentId').value;
+                        detailDepartment.textContent = document.getElementById('department').value;
+                        detailProgram.textContent = document.getElementById('program').value;
+                        detailMemberIdRow.style.display = 'table-row';
+                        detailDepartmentRow.style.display = 'table-row';
+                        detailProgramRow.style.display = 'table-row';
+                        break;
+                    case 'faculty':
+                        detailMemberId.textContent = document.getElementById('employeeId').value;
+                        detailDepartment.textContent = document.getElementById('department').value;
+                        detailDesignation.textContent = document.getElementById('designation').value;
+                        detailMemberIdRow.style.display = 'table-row';
+                        detailDepartmentRow.style.display = 'table-row';
+                        detailDesignationRow.style.display = 'table-row';
+                        break;
+                    case 'research':
+                        detailMemberId.textContent = document.getElementById('employeeId').value;
+                        detailDepartment.textContent = document.getElementById('department').value;
+                        detailResearch.textContent = document.getElementById('researchArea').value;
+                        detailMemberIdRow.style.display = 'table-row';
+                        detailDepartmentRow.style.display = 'table-row';
+                        detailResearchRow.style.display = 'table-row';
+                        break;
+                }
+                
+                // Show books section only if there are borrowed books
+                if (sampleBooks.length > 0) {
+                    displayBorrowedBooks();
+                    booksSection.classList.add('visible');
+                } else {
+                    booksSection.classList.remove('visible');
+                }
+                
+                // Navigate to member details page
+                showPage(memberDetailsPage);
+                
+                // Reset form
+                registerForm.reset();
+            });
+
+            // Display borrowed books
+            function displayBorrowedBooks() {
+                booksList.innerHTML = '';
+                
+                if (sampleBooks.length === 0) {
+                    booksList.innerHTML = '<tr><td colspan="5" class="no-books">No books currently borrowed</td></tr>';
+                    return;
+                }
+                
+                sampleBooks.forEach(book => {
+                    const bookRow = document.createElement('tr');
+                    bookRow.innerHTML = `
+                        <td>${book.title}</td>
+                        <td>${book.author}</td>
+                        <td>${book.takenDate}</td>
+                        <td>${book.dueDate}</td>
+                        <td><span class="book-status">Borrowed</span></td>
+                    `;
+                    booksList.appendChild(bookRow);
+                });
+            }
+
+            // Navigation handlers
+            backToMemberTypes.addEventListener('click', function() {
+                showPage(memberTypesPage);
+            });
+            
+            backToRegistration.addEventListener('click', function() {
+                showPage(registrationPage);
+            });
+            
+            registerAnother.addEventListener('click', function() {
+                showPage(registrationPage);
+            });
+            
+            backToHome.addEventListener('click', function() {
+                showPage(memberTypesPage);
+            });
+
+            // Function to show a specific page and hide others
+            function showPage(page) {
+                // Hide all pages
+                document.querySelectorAll('.page').forEach(p => {
+                    p.classList.remove('active');
+                });
+                
+                // Show the requested page
+                page.classList.add('active');
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }
+        });
+    </script>
+</body>
+</html>

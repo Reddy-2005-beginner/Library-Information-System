@@ -1,0 +1,313 @@
+<!--<!DOCTYPE html>-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Book Page</title>
+  <style>
+  body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f7fb;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: blueviolet;
+  color: white;
+  padding: 10px 20px;
+  flex-wrap: wrap;
+}
+
+.navbar h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+}
+
+.navbar li {
+  margin: 0 10px;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+#searchBar {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  margin-left: 10px;
+}
+
+.container {
+  width: 95%;
+  margin: 30px auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+th {
+  background-color: blueviolet;
+  color: white;
+}
+
+
+
+/**/
+.buy-btn {
+  background-color: green;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.buy-btn:hover {
+  background-color: green;
+}
+
+.not-available {
+  color: #dc3545;
+  font-weight: bold;
+}
+/*borrow css*/
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  text-align: left;
+  width: 300px;
+}
+.popup-content input {
+  width: 100%;
+  margin: 5px 0;
+  padding: 6px;
+}
+.popup-content button {
+  margin: 5px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#submitBorrow {
+  background-color: #007bff;
+  color: white;
+}
+#closePopup {
+  background-color: #ccc;
+}
+</style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <h2>📚 Library System</h2>
+    <ul>
+      <li><a href="#" onclick="filterBooks('all')">All</a></li>
+      <li><a href="#" onclick="filterBooks('new')">New Books</a></li>
+      <li><a href="#" onclick="filterBooks('old')">Old Books</a></li>
+      <li><a href="#" onclick="filterBooks('issue')">Issue</a></li>
+      <li><a href="#" onclick="filterBooks('return')">Return</a></li>
+    </ul>
+    <input type="text" id="searchBar" placeholder="🔍 Search by title or author..." onkeyup="searchBooks()">
+  </nav>
+
+  <!-- Table -->
+  <div id="booksContainer">
+    <table id="bookTable">
+      <thead>
+        <tr>
+          <th>Serial No</th>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Copies</th>
+          <th>ISBN</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script >
+    document.addEventListener('DOMContentLoaded', async function () {
+  const user = JSON.parse(localStorage.getItem('user'));
+  const booksContainer = document.getElementById('booksContainer');
+
+  // ✅ Check login before loading books
+  if (!user) {
+    alert("Please login to view and borrow books.");
+    window.location.href = "index.html";
+    return;
+  }
+
+  // ✅ Fetch books from backend
+  try {
+    const res = await fetch('http://localhost:5000/api/books');
+    const books = await res.json();
+
+    // ✅ Create book table dynamically
+    booksContainer.innerHTML = `
+      <table border="1" cellpadding="10" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Serial No</th>
+            <th>Book Title</th>
+            <th>Author</th>
+            <th>Copies</th>
+            <th>ISBN</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${books
+            .map(
+              (book) => `
+            <tr>
+              <td>${book.serial_number}</td>
+              <td>${book.book_title}</td>
+              <td>${book.author}</td>
+              <td>${book.copies}</td>
+              <td>${book.isbn_number}</td>
+              <td>${book.status}</td>
+              <td>
+                ${
+                  book.status.toLowerCase() === 'available'
+                    ? `<button class="borrow-btn" 
+                        data-id="${book.serial_number}" 
+                        data-title="${book.book_title}">
+                        Borrow
+                      </button>`
+                    : `<span style="color:red;">Not Available</span>`
+                }
+              </td>
+            </tr>`
+            )
+            .join('')}
+        </tbody>
+      </table>
+    `;
+
+    // ✅ Add Borrow button click handlers
+    document.querySelectorAll('.borrow-btn').forEach((btn) => {
+      btn.addEventListener('click', function () {
+        const bookId = this.getAttribute('data-id');
+        const bookTitle = this.getAttribute('data-title');
+        openBorrowForm(bookId, bookTitle);
+      });
+    });
+  } catch (err) {
+    console.error(err);
+    alert('Error fetching books from server.');
+  }
+});
+
+
+// ✅ Borrow form popup (asks for dates)
+function openBorrowForm(bookId, bookTitle) {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (!user) {
+    alert("Please login to borrow books.");
+    return;
+  }
+
+  // Create form dynamically
+  const formHtml = `
+    <div id="borrowPopup" 
+      style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+             background: blueviolet; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px gray; z-index: 1000;">
+      <h3>Borrow Book</h3>
+      <p><strong>Book:</strong> ${bookTitle}</p>
+      <p><strong>Name:</strong> ${user.full_name}</p>
+      <label>Borrow Date: <input type="date" id="borrowDate" required></label><br><br>
+      <label>Return Date: <input type="date" id="returnDate" required></label><br><br>
+      <button id="confirmBorrow">Borrow</button>
+      <button id="cancelBorrow">Cancel</button>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML('beforeend', formHtml);
+
+  // Button handlers
+  document.getElementById('cancelBorrow').onclick = () => {
+    document.getElementById('borrowPopup').remove();
+  };
+
+  document.getElementById('confirmBorrow').onclick = async () => {
+    const borrowDate = document.getElementById('borrowDate').value;
+    const returnDate = document.getElementById('returnDate').value;
+
+    if (!borrowDate || !returnDate) {
+      alert("Please select both borrow and return dates.");
+      return;
+    }
+
+    try {
+      const res = await fetch('http://localhost:5000/api/borrow', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,bookId
+        }),
+      });
+
+      const data = await res.json();
+      alert(data.message);
+      document.getElementById('borrowPopup').remove();
+    } catch (err) {
+      console.error(err)
+      alert('Error connecting to server.');
+    }
+  };
+}
+
+  </script>
+</body>
+</html>

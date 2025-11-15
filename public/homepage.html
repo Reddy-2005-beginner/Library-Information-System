@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Information System - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #fca311;
+            --danger: #e63946;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+     .logo {
+    display: flex;
+    align-items: center;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.logo-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 15px;
+    margin-left: 0;
+    border: 3px solid white;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    animation: pulse 2s infinite;
+    flex-shrink: 0; 
+}
+
+.logo-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    border-radius: 50%; 
+    display: block; 
+}
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+             flex-wrap: nowrap;
+        }
+
+        nav ul li {
+            margin-left: 5px;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 15px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+             white-space: nowrap;
+        }
+
+        nav ul li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        nav ul li a:hover::before {
+            left: 100%;
+        }
+
+        nav ul li a i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(67, 97, 238, 0.85), rgba(58, 12, 163, 0.85)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: slideUp 1s ease-out 0.3s both;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            animation: slideUp 1s ease-out 0.5s both;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--secondary);
+            position: relative;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            margin: 15px auto;
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
+        .feature-card:nth-child(4) { animation-delay: 0.4s; }
+        .feature-card:nth-child(5) { animation-delay: 0.5s; }
+        .feature-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 15px;
+            color: var(--secondary);
+            font-size: 1.5rem;
+        }
+
+        /* Quick Stats */
+        .stats {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 60px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .stat-item:nth-child(1) { animation-delay: 0.1s; }
+        .stat-item:nth-child(2) { animation-delay: 0.2s; }
+        .stat-item:nth-child(3) { animation-delay: 0.3s; }
+        .stat-item:nth-child(4) { animation-delay: 0.4s; }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--success);
+        }
+
+        /* Member Types */
+        .member-types {
+            padding: 80px 0;
+            background-color: var(--light);
+        }
+
+        .types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .type-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .type-card:nth-child(1) { animation-delay: 0.1s; }
+        .type-card:nth-child(2) { animation-delay: 0.2s; }
+        .type-card:nth-child(3) { animation-delay: 0.3s; }
+        .type-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .type-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+
+        .type-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.12);
+        }
+
+        .type-card h3 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+            font-size: 1.4rem;
+        }
+
+        .type-card p {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .type-card i {
+            margin-right: 10px;
+            color: var(--primary);
+            width: 20px;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+            color: white;
+            padding: 60px 0 20px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 25px;
+            color: var(--success);
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--accent);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-section a {
+            color: #e0e0e0;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-section a i {
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
+
+        .footer-section a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #b0b0b0;
+            font-size: 0.9rem;
+        }
+
+        .social-icons {
+            display: flex;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            margin-right: 10px;
+            transition: all 0.3s;
+        }
+
+        .social-icons a:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav ul {
+                margin-top: 20px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            nav ul li {
+                margin: 5px;
+            }
+
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 80px 0;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .feature-card, .type-card {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .logo-image {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+        
+            .user-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-actions button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: all 0.3s;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .user-actions button:hover {
+            background-color: #e11570;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-image">
+                        <img src="images/logo.jpg" alt="College Logo" class="logo-image">
+                    </div>
+                    <h1>Library Information System</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="homepage.html" class="active"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="josh1.html"><i class="fas fa-book"></i> Books</a></li>
+                        <li><a href="members.html"><i class="fas fa-users"></i> Members</a></li>
+                        <li><a href="librarian.html"><i class="fas fa-user-tie"></i> Librarian</a></li>
+                        <li><a href="penalties.html"><i class="fas fa-user-cog"></i>Penalties</a></li>
+                        <li><a href="reports.html"><i class="fas fa-user-cog"></i>Reports</a></li>
+                        <li><a href="profile.html"><i class="fas fa-user-circle"></i>MyProfile</a></li>
+                    </ul>
+                </nav> 
+     
+                 <div class="user-actions">
+                        <button id="loginBtn"><i class="fas fa-sign-in-alt"></i> Logout</button>
+                      
+                    </div>
+                
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Homepage Content -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Welcome to IIIT RKVALLEY Digital Library</h2>
+                    <p>Access thousands of books, manage your account, and explore our extensive collection with ease.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <h2 class="section-title">Library Services</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-search"></i></div>
+                        <h3 >Book Search</h3>
+                        <p>Find books by title, author, or ISBN. Check availability and location details.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-exchange-alt"></i></div>
+                        <h3>Book Issue & Return</h3>
+                        <p>Issue and return books with automated tracking and penalty calculation.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-user-friends"></i></div>
+                        <h3>Member Management</h3>
+                        <p>Manage member accounts with different privileges based on membership type.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-calendar-check"></i></div>
+                        <h3>Reservation System</h3>
+                        <p>Reserve books that are currently issued and get notified when available.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
+                        <h3>Reports & Analytics</h3>
+                        <p>Generate reports on book usage, overdue items, and member activity.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-tools"></i></div>
+                        <h3>Admin Tools</h3>
+                        <p>Manage book inventory, member records, and system settings.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">10,000+</div>
+                        <div class="stat-label">Books in Collection</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Member Categories</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Online Access</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">5</div>
+                        <div class="stat-label">Years of Data Retention</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="member-types">
+            <div class="container">
+                <h2 class="section-title">Member Privileges</h2>
+                <div class="types-grid">
+                    <div class="type-card">
+                        <h3>Undergraduate Students</h3>
+                        <p><i class="fas fa-book"></i> <strong>Books:</strong> Up to 2 books</p>
+                        <p><i class="fas fa-calendar-alt"></i> <strong>Duration:</strong> 1 month</p>
+                        <p><i class="fas fa-user-graduate"></i> Special student privileges</p>
+                    </div>
+                    <div class="type-card">
+                        <h3>Postgraduate Students</h3>
+                        <p><i class="fas fa-book"></i> <strong>Books:</strong> Up to 4 books</p>
+                        <p><i class="fas fa-calendar-alt"></i> <strong>Duration:</strong> 1 month</p>
+                        <p><i class="fas fa-user-graduate"></i> Extended research access</p>
+                    </div>
+                    <div class="type-card">
+                        <h3>Research Scholars</h3>
+                        <p><i class="fas fa-book"></i> <strong>Books:</strong> Up to 6 books</p>
+                        <p><i class="fas fa-calendar-alt"></i> <strong>Duration:</strong> 3 months</p>
+                        <p><i class="fas fa-microscope"></i> Priority research support</p>
+                    </div>
+                    <div class="type-card">
+                        <h3>Faculty Members</h3>
+                        <p><i class="fas fa-book"></i> <strong>Books:</strong> Up to 10 books</p>
+                        <p><i class="fas fa-calendar-alt"></i> <strong>Duration:</strong> 6 months</p>
+                        <p><i class="fas fa-chalkboard-teacher"></i> Full administrative access</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Home</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Book Catalog</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> My Account</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Reservations</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Member Services</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Issue Books</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Return Books</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Renew Books</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Pay Penalties</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Admin Functions</h3>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Manage Books</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Manage Members</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Generate Reports</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> System Settings</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> Library Help Desk: (123) 456-7890</li>
+                        <li><i class="fas fa-envelope"></i> Email: library@iiitrkvalley.ac.in</li>
+                        <li><i class="fas fa-clock"></i> Hours: Mon-Fri 9AM-6PM</li>
+                    </ul>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 IIIT RKVALLEY Library Information System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add animation to navigation items
+            const navItems = document.querySelectorAll('nav ul li a');
+            navItems.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+            });
+
+
+            // logout
+            
+            
+            document.getElementById('loginBtn').addEventListener('click', function(event) {
+    event.preventDefault();
+    if (confirm('Are you sure you want to exit?')) {
+        window.location.href = 'index.html';
+    }
+    // If 'No', do nothing and remain on the same page
+});
+
+            // Add active state to navigation
+            const navLinks = document.querySelectorAll('nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    // Remove active class from all links
+                    navLinks.forEach(item => item.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
